@@ -3,9 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../screen/Home';
 import User from '../screen/User';
-import Chat from '../screens/Chat';
-import WaitingRoom from '../screens/WaitingRoom';
-import Video from '../screens/Video';
+import Chat from '../screen/Chat';
+import WaitingRoom from '../screen/WaitingRoom';
+import Video from '../screen/Video';
 import Consultation from '../screen/Consultation';
 
 const Navigation = (props) => {

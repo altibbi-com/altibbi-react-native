@@ -11,23 +11,28 @@ import {
   View,
 } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {
+  ImageLibraryOptions,
+  ImagePickerResponse,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 import {
   AltibbiChat,
   ConnectionHandler,
   GroupChannelHandler,
   GroupChannelModule,
   uploadMedia,
+  GroupChannel,
 } from 'react-native-altibbi';
 
 const Chat = (props) => {
   const data = props?.route?.params?.event;
+  const ref = useRef<any>(null);
 
-  const ref = useRef<AltibbiChat | null>(null);
-  const channelRef = useRef(null);
+  const channelRef = useRef<any>();
   const [loading, setLoading] = useState(true);
   const [textInput, setTextInput] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<any>(null);
   const [messageList, setMessageList] = useState([]);
 
   const init = () => {
@@ -49,7 +54,8 @@ const Chat = (props) => {
   const reconnect = () => {
     ref?.current?.reconnect();
   };
-  const getChannel = async (channelURL) => {
+
+  const getChannel = async (channelURL: string): Promise<GroupChannel> => {
     const channel = await ref?.current?.groupChannel
       .getChannel(channelURL)
       .catch((e) => {
@@ -60,8 +66,8 @@ const Chat = (props) => {
     return channel;
   };
   const sendMessage = (msg) => {
-    const send = channelRef.current.sendUserMessage(msg);
-    send.onSucceeded((message1) => {
+    const send = channelRef?.current?.sendUserMessage(msg);
+    send?.onSucceeded((message1: any) => {
       console.log('onSucceeded');
       const newMessage = {
         createdAt: message1.createdAt,
@@ -76,7 +82,7 @@ const Chat = (props) => {
     send.onFailed((err) => {
       console.log('onFailed', err);
     });
-    send.onPending((message2) => {
+    send.onPending(() => {
       console.log('onPending');
     });
   };
@@ -177,30 +183,32 @@ const Chat = (props) => {
   };
 
   const openImagePicker = () => {
-    const options = {
+    const options: ImageLibraryOptions = {
       mediaType: 'photo',
       includeBase64: false,
       maxHeight: 2000,
       maxWidth: 2000,
     };
 
-    launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, (response: ImagePickerResponse) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('Image picker error: ', response.error);
+      } else if (response.errorMessage) {
+        console.log('Image picker error: ', response.errorMessage);
       } else {
         const source =
           Platform.OS === 'android'
-            ? response.assets[0].uri
-            : response.assets[0].uri.replace('file://', '');
+            ? response.assets?.[0].uri
+            : response.assets?.[0].uri?.replace('file://', '');
         const fileName = encodeURI(source.replace(/^.*[\\\/]/, ''));
 
-        uploadMedia(source, response.assets[0].type, fileName).then((res) => {
-          sendMessage({
-            message: res.data.url,
-          });
-        });
+        uploadMedia(source, response.assets?.[0]?.type || '', fileName).then(
+          (res) => {
+            sendMessage({
+              message: res.data.url,
+            });
+          }
+        );
       }
     });
   };
