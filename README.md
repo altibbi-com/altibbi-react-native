@@ -1,5 +1,3 @@
-********# react-native-altibbi
-
 This Flutter SDK provides integration for the Altibbi services, including video consultation, text consultation, push
 notification, and many other features. This guide will walk you through the steps to integrate it into your Flutter
 project.
@@ -176,6 +174,11 @@ import { cancelConsultation } from 'react-native-altibbi';
 const response = await cancelConsultation(consultation_id)
 ```
 
+## Support
+
+If you need support you can contact: [mobile@altibbi.com](mobile@altibbi.com). Please
+ensure that you are referencing the latest version of our SDK to access all available features and improvements.
+
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
@@ -185,5 +188,3 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 MIT
 
 ---
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)********
