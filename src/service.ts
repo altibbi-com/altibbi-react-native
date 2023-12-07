@@ -11,7 +11,6 @@ export let TBIConstants: ConstantObject = {
 };
 
 export const init = (domain: string, language: string, token: string) => {
-  console.log("init", domain, language, token);
   TBIConstants = {
     domain,
     language,

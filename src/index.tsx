@@ -78,3 +78,11 @@ export {
   genderTypeArray,
   MediumArray,
 } from './data';
+
+export {
+  ConnectionHandlerParams,
+  GroupChannelHandlerParams,
+  MessageModule,
+  type ModuleNamespaces,
+  PollModule,
+} from '@sendbird/chat/lib/__definition';

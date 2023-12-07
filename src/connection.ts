@@ -15,6 +15,23 @@ interface ConsultationObject {
   mediaIds?: string[];
   followUpId?: string;
 }
+
+interface RequestParamsInterface {
+  method: string;
+  data?: Record<any, any>;
+  endPoint: string;
+  path?: string;
+  type?: string;
+  fileName?: string;
+  download?: boolean;
+}
+
+interface RequestInterface {
+  method: string;
+  headers: Record<string, string>;
+  body: string | FormData | undefined;
+}
+
 export const Methods: MethodsObject = {
   get: 'GET',
   post: 'POST',
@@ -37,22 +54,6 @@ const fetchData = (
   ]).catch((e) => {
     throw Error(`Fetch Error : ${e}`);
   });
-
-interface RequestParamsInterface {
-  method: string;
-  data?: Record<any, any>;
-  endPoint: string;
-  path?: string;
-  type?: string;
-  fileName?: string;
-  download?: boolean;
-}
-
-interface RequestInterface {
-  method: string;
-  headers: Record<string, string>;
-  body: string | FormData | undefined;
-}
 
 export const request = async ({
   method,

@@ -1,32 +1,39 @@
 import React, { useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { TBIConstants } from 'react-native-altibbi';
+import {
+  TBIConstants,
+  TBISocketEvent,
+  TBISocketMember,
+} from 'react-native-altibbi';
 import { cancelConsultation } from 'react-native-altibbi';
 import { getLastConsultation } from 'react-native-altibbi';
 import { TBISocket } from 'react-native-altibbi';
 
 const WaitingRoom = (props) => {
   const { channel, socketKey, consultationId } = props?.route?.params;
-  const instance = TBISocket.getInstance();
+  const instance: TBISocket = TBISocket.getInstance();
 
   const disconnect = () => instance?.disconnect();
 
-  const log = (line) => {
+  const log = (line: string) => {
     console.log(line);
   };
 
-  const onConnectionStateChange = (currentState, previousState) => {
+  const onConnectionStateChange = (
+    currentState: string,
+    previousState: string
+  ) => {
     log(
       `onConnectionStateChange. previousState=${previousState} newState=${currentState}`
     );
   };
 
-  const onError = (message, code, error) => {
+  const onError = (message: string, code: Number, error: any) => {
     log(`onError: ${message} code: ${code} exception: ${error}`);
   };
 
-  const onEvent = (eventData) => {
-    if (eventData != null && eventData.eventName === 'call-status') {
+  const onEvent = (eventData: TBISocketEvent) => {
+    if (eventData && eventData.eventName === 'call-status') {
       let event = JSON.parse(eventData.data);
       if (event.status === 'in_progress') {
         getCurrentConsultationInfo();
@@ -40,31 +47,38 @@ const WaitingRoom = (props) => {
     });
   };
 
-  const onSubscriptionSucceeded = (channelName, data) => {
+  const onSubscriptionSucceeded = (channelName: string, data: any) => {
     log(
       `onSubscriptionSucceeded: ${channelName} data: ${JSON.stringify(data)}`
     );
   };
 
-  const onSubscriptionCount = (channelName, subscriptionCount) => {
+  const onSubscriptionCount = (
+    channelName: string,
+    subscriptionCount: Number
+  ) => {
     log(
       `onSubscriptionCount: ${subscriptionCount}, channelName: ${channelName}`
     );
   };
 
-  const onSubscriptionError = (channelName, message, e) => {
+  const onSubscriptionError = (
+    channelName: string,
+    message: string,
+    e: any
+  ) => {
     log(`onSubscriptionError: ${message}, channelName: ${channelName} e: ${e}`);
   };
 
-  const onDecryptionFailure = (eventName, reason) => {
+  const onDecryptionFailure = (eventName: string, reason: string) => {
     log(`onDecryptionFailure: ${eventName} reason: ${reason}`);
   };
 
-  const onMemberAdded = (channelName, member) => {
+  const onMemberAdded = (channelName: string, member: TBISocketMember) => {
     log(`onMemberAdded: ${channelName} user: ${member}`);
   };
 
-  const onMemberRemoved = (channelName, member) => {
+  const onMemberRemoved = (channelName: string, member: TBISocketMember) => {
     log(`onMemberRemoved: ${channelName} user: ${member}`);
   };
 
