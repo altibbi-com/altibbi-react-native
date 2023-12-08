@@ -39,7 +39,7 @@ const Video = (props) => {
       ));
     }
   };
-  console.log('RRRRRRRR', data);
+
   return (
     <TBISession
       options={{

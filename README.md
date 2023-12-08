@@ -174,6 +174,179 @@ import { cancelConsultation } from 'react-native-altibbi';
 const response = await cancelConsultation(consultation_id)
 ```
 
+### TBISocket :
+
+#### After create the consultation you have to use TBISocket to listen to consultation events
+
+#### import TBIScoket
+
+```js
+import { TBISocket } from 'react-native-altibbi';
+```
+
+```js
+const instance = TBISocket.getInstance();
+```
+
+#### connect && subscribe to listen to event
+
+```js
+await instance.init({
+  apiKey: API_KEY, // app key retrived by api
+  cluster: 'eu',
+  authEndpoint: `${PARTNER_ENDPOINT}/v1/auth/pusher?access-token=${USER_TOKEN}`,
+  onConnectionStateChange,
+  onError,
+  onEvent,
+  onSubscriptionSucceeded,
+  onSubscriptionError,
+  onDecryptionFailure,
+  onMemberAdded,
+  onMemberRemoved,
+  onSubscriptionCount,
+});
+await instance.subscribe({ channelName: CHANNEL_NAME });
+await instance.connect();
+```
+
+### Video Consultation
+
+#### import video components
+
+```js
+import {
+  TBIPublisher,
+  TBISession,
+  TBISubscriber,
+  TBISubscriberView,
+} from 'react-native-altibbi';
+```
+
+```js
+<TBISession
+  options={{
+    androidZOrder: 'onTop',
+    androidOnTop: 'publisher',
+  }}
+  ref={(ref) => (sessionRef.current = ref)}
+  apiKey={API_KEY} //retrived from api
+  sessionId={CALL_ID}//retrived from api
+  token={TOKEN}//retrived from api
+  eventHandlers={{
+    streamDestroyed: (event) => {
+    },
+    error: (event) => {
+    },
+    otrnError: (event) => {
+    },
+  }}
+>
+  <TBISubscriber
+    eventHandlers={{
+      error: (event) => {
+      },
+      otrnError: (event) => {
+      },
+    }}
+  >
+    {renderSubscribers}
+  </TBISubscriber>
+  <TBIPublisher
+    properties={{
+      cameraPosition: 'front',
+      publishVideo: true, // false if it voip consultation
+      publishAudio: true,
+      enableDtx: true,
+    }}
+    eventHandlers={{
+      streamDestroyed: (event) => {
+      },
+      error: (event) => {
+      },
+      otrnError: (event) => {
+      },
+    }}
+  />
+</TBISession>
+```
+
+### Chat Consultation
+
+#### import the components
+
+```js
+import {
+  AltibbiChat,
+} from 'react-native-altibbi';
+```
+
+```js
+const ref = useRef(null);
+
+const init = () => {
+  AltibbiChat.init({
+    appId: APP_ID,
+    modules: [new GroupChannelModule()],
+  });
+};
+
+const connect = async () => {
+  await ref?.current?.connect(data.chat_user_id, data.chat_user_token);
+};
+
+const addHandler = () => {
+  let groupChannelHandler = new GroupChannelHandler({
+    onUserJoined,
+    onUserLeft,
+    onTypingStatusUpdated,
+    onMessageReceived,
+  });
+
+  let connectionHandler = new ConnectionHandler({
+    onConnected,
+    onReconnectStarted,
+    onReconnectSucceeded,
+    onReconnectFailed,
+    onDisconnected,
+  });
+  ref?.current?.groupChannel?.addGroupChannelHandler(
+    'CHA_HAN',
+    groupChannelHandler
+  );
+  ref?.current?.addConnectionHandler('CHA_CONN', connectionHandler);
+};
+
+const loadAllMessage = async (channelURL) => {
+  const channel = await getChannel(channelURL);
+  const previousMessageList = await channel.createPreviousMessageListQuery();
+  let allMessages = [];
+
+  while (previousMessageList.hasNext) {
+    let newMsgArr = await previousMessageList.load();
+    allMessages = [...allMessages, ...newMsgArr];
+  }
+  return allMessages;
+};
+
+```
+
+```js
+useEffect(() => {
+  const chatStart = async () => {
+    init();
+    addHandler();
+    connect().then(() => {
+      loadAllMessage(`channel_${data.group_id}`).then((res) => {
+        setMessageList(res);
+        setLoading(false);
+      });
+    });
+  };
+  chatStart();
+}, []);
+```
+
+
 ## Support
 
 If you need support you can contact: [mobile@altibbi.com](mobile@altibbi.com). Please
