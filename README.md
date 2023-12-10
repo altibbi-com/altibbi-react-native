@@ -1,5 +1,5 @@
-This Flutter SDK provides integration for the Altibbi services, including video consultation, text consultation, push
-notification, and many other features. This guide will walk you through the steps to integrate it into your Flutter
+This React native SDK provides integration for the Altibbi services, including video consultation, text consultation, push
+Welcome to the React Native SDK for Altibbi services, your comprehensive solution for integrating health consultation services into your React Native applications. This SDK enables video and text consultations, push notifications, and many other features to provide a seamless healthcare experience.
 project.
 
 
@@ -13,8 +13,6 @@ project.
 ## Prerequisites
 - React Native 0.60 or higher
 - Node.js 16 or higher
-
-## Usage
 
 ## Installation
 Install the SDK with npm:
@@ -39,7 +37,7 @@ Initialize the Altibbi SDK with the following parameters:
 ```js
 import { init } from 'react-native-altibbi';
 
-init('PARTNER_ENDPOINT', 'TOKEN', 'LANGUAGE');
+init('TOKEN', 'PARTNER_ENDPOINT', 'LANGUAGE');
 ```
 
 

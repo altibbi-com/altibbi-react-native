@@ -1,27 +1,15 @@
 import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import type { BloodType, BoolString, GenderType, MaritalStatus, UserType } from 'react-native-altibbi';
 import {
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-import {
-  getUser,
-  getUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-  UserType,
-  BloodType,
-  MaritalStatus,
-  BoolString,
-  GenderType,
-  materialStatusArray,
   bloodTypeArray,
   boolStringArray,
+  createUser,
+  deleteUser,
   genderTypeArray,
+  getUser,
+  getUsers,
+  materialStatusArray,
 } from 'react-native-altibbi';
 import { Radio } from '../component/radio';
 
@@ -60,16 +48,16 @@ const User = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [dateOfBirth, setDateOfBirth] = useState<string>('');
-  const [gender, setGender] = useState<GenderType>(genderTypeArray[0]);
+  const [gender, setGender] = useState<GenderType | undefined>(genderTypeArray[0]);
   const [insuranceId, setInsuranceId] = useState<string>('');
   const [policyNumber, setPolicyNumber] = useState<string>('');
   const [nationalityNumber, setNationalityNumber] = useState<string>('');
   const [height, setHeight] = useState<string>('');
   const [weight, setWeight] = useState<string>('');
   const [bloodType, setBloodType] = useState<BloodType>();
-  const [smoker, setSmoker] = useState<BoolString>(null);
-  const [alcoholic, setAlcoholic] = useState<BoolString>(null);
-  const [maritalStatus, setMaritalStatus] = useState<MaritalStatus>(null);
+  const [smoker, setSmoker] = useState<BoolString>();
+  const [alcoholic, setAlcoholic] = useState<BoolString>();
+  const [maritalStatus, setMaritalStatus] = useState<MaritalStatus>();
   const [id, setID] = useState<string>('');
   const [id2, setID2] = useState<string>('');
 
@@ -81,13 +69,13 @@ const User = () => {
             style={styles.textInput}
             onChangeText={(text) => setName(text)}
             value={name}
-            placeholder="Name"
+            placeholder='Name'
           />
           <TextInput
             style={styles.textInput}
             onChangeText={(text) => setDateOfBirth(text)}
             value={dateOfBirth}
-            placeholder="date of birth"
+            placeholder='date of birth'
           />
         </View>
         <View style={styles.viewHolder}>
@@ -95,13 +83,13 @@ const User = () => {
             style={styles.textInput}
             onChangeText={(text) => setEmail(text)}
             value={email}
-            placeholder="email"
+            placeholder='email'
           />
           <TextInput
             style={styles.textInput}
             onChangeText={(text) => setPhoneNumber(text)}
             value={phoneNumber}
-            placeholder="phoneNumber"
+            placeholder='phoneNumber'
           />
         </View>
         <View style={styles.viewHolder}>
@@ -109,7 +97,7 @@ const User = () => {
             style={styles.textInput}
             onChangeText={(text) => setInsuranceId(text)}
             value={insuranceId}
-            placeholder="insuranceId"
+            placeholder='insuranceId'
           />
         </View>
         <View style={styles.viewHolder}>
@@ -117,13 +105,13 @@ const User = () => {
             style={styles.textInput}
             onChangeText={(text) => setHeight(text)}
             value={height}
-            placeholder="height"
+            placeholder='height'
           />
           <TextInput
             style={styles.textInput}
             onChangeText={(text) => setWeight(text)}
             value={weight}
-            placeholder="weight"
+            placeholder='weight'
           />
         </View>
         <View style={styles.viewHolder}>
@@ -131,13 +119,13 @@ const User = () => {
             style={styles.textInput}
             onChangeText={(text) => setPolicyNumber(text)}
             value={policyNumber}
-            placeholder="policyNumber"
+            placeholder='policyNumber'
           />
           <TextInput
             style={styles.textInput}
             onChangeText={(text) => setNationalityNumber(text)}
             value={nationalityNumber}
-            placeholder="nationalityNumber"
+            placeholder='nationalityNumber'
           />
         </View>
         <Radio
@@ -186,7 +174,10 @@ const User = () => {
             };
             createUser(params).then((res) => {
               console.log(res);
+            }).catch((err) => {
+              console.log('something went wrong', err);
             });
+            ;
           }}
         >
           <Text style={styles.buttonText}>Create User</Text>
@@ -200,7 +191,9 @@ const User = () => {
                 return;
               }
               getUser(id).then((res) => {
-                console.log(res);
+                console.log('Example userName: ', res.data.name);
+              }).catch((err) => {
+                console.log('something went wrong', err);
               });
             }}
           >
@@ -211,7 +204,7 @@ const User = () => {
             style={styles.textInput}
             onChangeText={(text) => setID(text)}
             value={id}
-            placeholder="user Id"
+            placeholder='user Id'
           />
         </View>
         <View style={styles.viewHolder}>
@@ -220,7 +213,10 @@ const User = () => {
             onPress={() => {
               deleteUser(id2).then((res) => {
                 console.log(res);
+              }).catch((err) => {
+                console.log('something went wrong', err);
               });
+              ;
             }}
           >
             <Text style={styles.buttonText}>delete user</Text>
@@ -229,7 +225,7 @@ const User = () => {
             style={styles.textInput}
             onChangeText={(text) => setID2(text)}
             value={id2}
-            placeholder="userDeleteId"
+            placeholder='userDeleteId'
           />
         </View>
         <TouchableOpacity
@@ -237,7 +233,10 @@ const User = () => {
           onPress={() => {
             getUsers(1).then((res) => {
               console.log(res);
+            }).catch((err) => {
+              console.log('something went wrong', err);
             });
+            ;
           }}
         >
           <Text style={styles.buttonText}>get all users</Text>
