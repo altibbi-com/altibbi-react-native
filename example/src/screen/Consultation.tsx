@@ -211,10 +211,14 @@ const Consultation = (props) => {
               medium: picked,
               user_id: userId,
               mediaIds: imageID ? [imageID] : [],
-            }).then((res) => {
-              console.log(res);
-              getCurrentConsultationInfo();
-            });
+            })
+              .then((res) => {
+                console.log(res);
+                getCurrentConsultationInfo();
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           }}
           style={styles.button}
         >

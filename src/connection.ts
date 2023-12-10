@@ -1,5 +1,5 @@
 import { TBIConstants } from './service';
-import { ConsultationType, ResponseType, UserType } from './types';
+import { ConsultationType, MediaType, ResponseType, UserType } from './types';
 
 interface MethodsObject {
   get: string;
@@ -126,7 +126,7 @@ export const getUser = async (
   if (response.status === 200) {
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const getUsers = async (
@@ -141,7 +141,7 @@ export const getUsers = async (
   if (response.status === 200) {
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const createUser = async (
@@ -155,7 +155,7 @@ export const createUser = async (
   if (response.status === 201) {
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const updateUser = async (
@@ -170,7 +170,7 @@ export const updateUser = async (
   if (response.status === 201) {
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const deleteUser = async (
@@ -184,7 +184,7 @@ export const deleteUser = async (
   if (response.status === 204) {
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const createConsultation = async ({
@@ -217,7 +217,7 @@ export const createConsultation = async ({
   if (response.status === 201) {
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const getConsultationInfo = async (
@@ -240,7 +240,7 @@ export const getConsultationInfo = async (
     };
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const getLastConsultation = async (): Promise<
@@ -265,7 +265,7 @@ export const getLastConsultation = async (): Promise<
     };
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const getConsultationList = async (
@@ -292,7 +292,7 @@ export const getConsultationList = async (
   if (response.status === 200) {
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const deleteConsultation = async (
@@ -306,7 +306,7 @@ export const deleteConsultation = async (
   if (response.status === 204) {
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
 export const cancelConsultation = async (
@@ -321,11 +321,15 @@ export const cancelConsultation = async (
   if (response.status === 200) {
     return response;
   }
-  throw Error(JSON.stringify(response?.data));
+  throw Error(JSON.stringify(response));
 };
 
-export const uploadMedia = (path: string, type: string, fileName: string) =>
-  request({
+export const uploadMedia = async (
+  path: string,
+  type: string,
+  fileName: string
+): Promise<ResponseType<MediaType>> => {
+  const response: ResponseType<MediaType> = await request({
     method: Methods.post,
     endPoint: `media`,
     data: {},
@@ -333,6 +337,11 @@ export const uploadMedia = (path: string, type: string, fileName: string) =>
     type,
     fileName,
   });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
 
 export const getPrescription = (consultation_id: number) =>
   request({
