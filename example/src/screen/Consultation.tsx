@@ -96,6 +96,7 @@ const Consultation = (props) => {
   const [getConsultationId, setGetConsultationId] = useState<string>('');
   const [getConsultationListId, setGetConsultationListId] =
     useState<string>('');
+  const [prescriptionId, setPrescriptionId] = useState<string>('');
   const [userId, setUserId] = useState<number>();
   const [imageID, setImageID] = useState<string>();
 
@@ -148,8 +149,8 @@ const Consultation = (props) => {
           status: res?.data[0]?.status,
           medium: res?.data[0]?.medium,
           channel: res.data[0].pusherChannel,
-          socketKey: res.data[0].pusherAppKey,
           consultationId: res.data[0].id,
+          socketParams: res.data[0].socketParams,
         });
       }
     });
@@ -208,7 +209,7 @@ const Consultation = (props) => {
             createConsultation({
               question: textBody,
               medium: picked,
-              userId,
+              user_id: userId,
               mediaIds: imageID ? [imageID] : [],
             }).then((res) => {
               console.log(res);
@@ -292,28 +293,43 @@ const Consultation = (props) => {
             <Text style={styles.buttonText}>Get Consultation by id</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() => {
-            getPrescription().then(async (response) => {
-              const {
-                dirs: { DownloadDir, DocumentDir }, // DownloadDir for android  , DocumentDir for ios
-              } = RNFetchBlob.fs;
-              const arrayBuffer = await response.arrayBuffer();
-              const buffer = Buffer.from(arrayBuffer);
-              const base64String = buffer.toString('base64');
-              const filePath =
-                (Platform.OS === 'ios' ? DocumentDir : DownloadDir) +
-                '/prescription' +
-                new Date().getTime() +
-                '.pdf';
-              await RNFetchBlob.fs.createFile(filePath, base64String, 'base64');
-              console.log('Download Completed');
-            });
-          }}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>download Prescription</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row' }}>
+          <TextInput
+            keyboardType={'number-pad'}
+            style={styles.input3}
+            placeholder="id"
+            value={prescriptionId}
+            onChangeText={(idText: string) => setPrescriptionId(idText)}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              getPrescription(parseInt(prescriptionId)).then(
+                async (response) => {
+                  const {
+                    dirs: { DownloadDir, DocumentDir }, // DownloadDir for android  , DocumentDir for ios
+                  } = RNFetchBlob.fs;
+                  const arrayBuffer = await response.arrayBuffer();
+                  const buffer = Buffer.from(arrayBuffer);
+                  const base64String = buffer.toString('base64');
+                  const filePath =
+                    (Platform.OS === 'ios' ? DocumentDir : DownloadDir) +
+                    '/prescription' +
+                    new Date().getTime() +
+                    '.pdf';
+                  await RNFetchBlob.fs.createFile(
+                    filePath,
+                    base64String,
+                    'base64'
+                  );
+                  console.log('Download Completed');
+                }
+              );
+            }}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>download Prescription</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
