@@ -2,35 +2,53 @@ This Flutter SDK provides integration for the Altibbi services, including video 
 notification, and many other features. This guide will walk you through the steps to integrate it into your Flutter
 project.
 
+
+## Features
+- **Video and VOIP Consultation:** Facilitate live video and VOIP sessions between patients and healthcare professionals.
+- **GSM Consultation:** Facilitate GSM(Phone calls) sessions between patients and healthcare professionals.
+- **Text Consultation:** Offer real-time text messaging for healthcare inquiries.
+- **User Management:** Easily manage user information with our comprehensive API.
+- **Real-time Notifications:** Keep users updated with push notifications and server to server real time callbacks.
+
+## Prerequisites
+- React Native 0.60 or higher
+- Node.js 16 or higher
+
+## Usage
+
 ## Installation
+Install the SDK with npm:
 
 ```sh
 npm install react-native-altibbi
 ```
+Or with yarn:
 
 ```sh
 yarn add react-native-altibbi
 ```
 
-## Usage
 
-### initlizetion
+## Initialization
+Initialize the Altibbi SDK with the following parameters:
+- **PARTNER_ENDPOINT:** Your partner endpoint (will be shared with you upon request).
+- **token:** Authentication token from your backend.
+- **language:** Preferred language for responses either Arabic (default) or English.
 
-Initialize the Altibbi service with the user token and partner endpoint as follows:
-Note: Be sure to replace placeholders "USER_TOKEN" and "PARTNER_ENDPOINT" with your actual values.
-language refer for the response language
-
-#### import init function to initialize Altibbi service
 
 ```js
 import { init } from 'react-native-altibbi';
+
+init('PARTNER_ENDPOINT', 'TOKEN', 'LANGUAGE');
 ```
 
-```js
-init('PARTNER_ENDPOINT', 'LANGUAGE', 'USER_TOKEN');
-```
 
-note that the USER_TOKEN should be retrieved from your backend
+## Detailed Usage
+
+
+### User API
+Manage users with functions like `createUser`, `updateUser`,`getUser`, `getUsers`, and `deleteUser`. Below are examples of how to use these functions:
+
 
 ### USER API
 
@@ -42,63 +60,60 @@ note that the USER_TOKEN should be retrieved from your backend
 | updateUser | userId             |
 | deleteUser | userId             |
 
-#### getUser
 
-```js
-import { getUser } from 'react-native-altibbi';
-```
-
-```js
-const response = await getUser(user_id)
-```
-
-#### getUsers
-
-```js
-import { getUsers } from 'react-native-altibbi';
-```
-
-```js
-const response = await getUsers(page, per_page)
-```
-
-#### createUser
+#### createUser Example
 
 ```js
 import { createUser } from 'react-native-altibbi';
-```
 
-```js
 const params = {
   name: "Altibbi",
 }
 const response = await createUser(params)
 ```
 
-#### updateUser
+
+#### updateUser Example
 
 ```js
 import { updateUser } from 'react-native-altibbi';
-```
 
-```js
 const params = {
   name: "Altibbi",
 }
 const response = await updateUser(params)
 ```
 
+
+#### getUser Example
+```js
+import { getUser } from 'react-native-altibbi';
+
+const response = await getUser(user_id)
+```
+
+
+#### getUsers Example
+
+```js
+import { getUsers } from 'react-native-altibbi';
+const response = await getUsers(page, per_page)
+```
+
 #### deleteUser
 
 ```js
 import { deleteUser } from 'react-native-altibbi';
-```
 
-```js
 const response = await updateUser(user_id)
 ```
 
+
+
+
 ### Consultation API
+Create and manage consultations using our suite of functions:
+
 
 | APi                 | params                                                                               |
 |---------------------|--------------------------------------------------------------------------------------|
@@ -113,9 +128,7 @@ const response = await updateUser(user_id)
 
 ```js
 import { createConsultation } from 'react-native-altibbi';
-```
 
-```js
 const params = {
   question,
   medium,
@@ -128,29 +141,15 @@ const response = await createConsultation(params)
 
 ```js
 import { getConsultationInfo } from 'react-native-altibbi';
-```
 
-```js
 const response = await getConsultationInfo(consultation_id)
-```
-
-#### deleteUser
-
-```js
-import { getLastConsultation } from 'react-native-altibbi';
-```
-
-```js
-const response = await getLastConsultation()
 ```
 
 #### getConsultationList
 
 ```js
 import { getConsultationList } from 'react-native-altibbi';
-```
 
-```js
 const response = await getConsultationList(user_id, page, per_page)
 ```
 
@@ -158,9 +157,7 @@ const response = await getConsultationList(user_id, page, per_page)
 
 ```js
 import { deleteConsultation } from 'react-native-altibbi';
-```
 
-```js
 const response = await deleteConsultation(consultation_id)
 ```
 
@@ -168,17 +165,14 @@ const response = await deleteConsultation(consultation_id)
 
 ```js
 import { cancelConsultation } from 'react-native-altibbi';
-```
 
-```js
 const response = await cancelConsultation(consultation_id)
 ```
 
 ### TBISocket :
 
-#### After create the consultation you have to use TBISocket to listen to consultation events
+#### After creating the consultation you can use TBISocket to listen to consultation status events
 
-#### import TBIScoket
 
 ```js
 import { TBISocket } from 'react-native-altibbi';
@@ -191,10 +185,8 @@ const instance = TBISocket.getInstance();
 #### connect && subscribe to listen to event
 
 ```js
-await instance.init({
-  apiKey: API_KEY, // app key retrived by api
-  cluster: 'eu',
-  authEndpoint: `${PARTNER_ENDPOINT}/v1/auth/pusher?access-token=${USER_TOKEN}`,
+await instance.init({...socketParams,// socketParams retrived from consultation Object in SDK
+...{
   onConnectionStateChange,
   onError,
   onEvent,
@@ -204,7 +196,7 @@ await instance.init({
   onMemberAdded,
   onMemberRemoved,
   onSubscriptionCount,
-});
+}});
 await instance.subscribe({ channelName: CHANNEL_NAME });
 await instance.connect();
 ```
@@ -229,9 +221,9 @@ import {
     androidOnTop: 'publisher',
   }}
   ref={(ref) => (sessionRef.current = ref)}
-  apiKey={API_KEY} //retrived from api
-  sessionId={CALL_ID}//retrived from api
-  token={TOKEN}//retrived from api
+  apiKey={API_KEY} //retrived from consultation Object in SDK
+  sessionId={CALL_ID}//retrived from consultation Object in SDK
+  token={TOKEN}//retrived from consultation Object in SDK
   eventHandlers={{
     streamDestroyed: (event) => {
     },
@@ -254,7 +246,7 @@ import {
   <TBIPublisher
     properties={{
       cameraPosition: 'front',
-      publishVideo: true, // false if it voip consultation
+      publishVideo: true, // set to false in voip consultation
       publishAudio: true,
       enableDtx: true,
     }}
@@ -349,15 +341,12 @@ useEffect(() => {
 
 ## Support
 
-If you need support you can contact: [mobile@altibbi.com](mobile@altibbi.com). Please
-ensure that you are referencing the latest version of our SDK to access all available features and improvements.
+For support, contact: [mobile@altibbi.com](mobile@altibbi.com). Please
+ensure that you are referencing the latest version of the SDK to access all available features and improvements.
 
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
 
 ## License
 
-MIT
+This project is licensed under the MIT License.
 
 ---
