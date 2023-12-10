@@ -2,19 +2,20 @@ import React, { useEffect } from 'react';
 import {
   StyleSheet,
   Text,
-  TextStyle,
+  type TextStyle,
   TouchableOpacity,
   View,
-  ViewStyle,
+  type ViewStyle,
 } from 'react-native';
 import { init } from 'react-native-altibbi';
+import { useNavigation } from '@react-navigation/native';
 
 type Style = {
   container: ViewStyle;
   button: ViewStyle;
   buttonText: TextStyle;
 };
-const styles: StyleSheet = StyleSheet.create<Style>({
+const styles = StyleSheet.create<Style>({
   container: {
     flex: 1,
     padding: 20,
@@ -34,13 +35,14 @@ const styles: StyleSheet = StyleSheet.create<Style>({
   },
 });
 
-const Home = (props) => {
+const Home = () => {
   useEffect(() => {
-    init('', 'ar', '');
+    init('', '', 'ar');
   }, []);
+  const navigation = useNavigation();
 
   const navigate = (page: string) => {
-    props.navigation.navigate(page);
+    navigation.navigate(page);
   };
 
   return (

@@ -1,4 +1,10 @@
-import { BloodType, BoolString, GenderType, MaritalStatus, MediumType } from './types';
+import {
+  BloodType,
+  BoolString,
+  GenderType,
+  MaritalStatus,
+  MediumType,
+} from './types';
 
 export const materialStatusArray: MaritalStatus[] = [
   'single',

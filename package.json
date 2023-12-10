@@ -31,7 +31,6 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib"
-
   },
   "keywords": [
     "react-native",
@@ -155,7 +154,7 @@
   "dependencies": {
     "@sendbird/chat": "4.10.3",
     "axios": "1.6.2",
-    "deprecated-react-native-prop-types": "5.0.0",
+    "deprecated-react-native-prop-types": "2.3.0",
     "flow-bin": "0.223.3",
     "prop-types": "15.8.1",
     "underscore": "1.13.6",

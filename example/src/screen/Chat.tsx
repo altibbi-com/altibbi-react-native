@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Button,
@@ -10,25 +10,29 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {PERMISSIONS, request} from 'react-native-permissions';
-import {launchImageLibrary} from 'react-native-image-picker';
+import { PERMISSIONS, request } from 'react-native-permissions';
+import {
+  ImageLibraryOptions,
+  ImagePickerResponse,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 import {
   AltibbiChat,
   ConnectionHandler,
   GroupChannelHandler,
   GroupChannelModule,
-  uploadMedia
+  uploadMedia,
+  GroupChannel,
 } from 'react-native-altibbi';
 
-
-const Chat = props => {
+const Chat = (props) => {
   const data = props?.route?.params?.event;
+  const ref = useRef<any>(null);
 
-  const ref = useRef(null);
-  const channelRef = useRef(null);
+  const channelRef = useRef<any>();
   const [loading, setLoading] = useState(true);
   const [textInput, setTextInput] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<any>(null);
   const [messageList, setMessageList] = useState([]);
 
   const init = () => {
@@ -42,7 +46,7 @@ const Chat = props => {
     await ref?.current?.connect(data.chat_user_id, data.chat_user_token);
   };
   const disconnect = () => {
-    ref?.current?.disconnect().then(r => {
+    ref?.current?.disconnect().then((r) => {
       console.log(r);
     });
   };
@@ -50,19 +54,20 @@ const Chat = props => {
   const reconnect = () => {
     ref?.current?.reconnect();
   };
-  const getChannel = async channelURL => {
+
+  const getChannel = async (channelURL: string): Promise<GroupChannel> => {
     const channel = await ref?.current?.groupChannel
       .getChannel(channelURL)
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         return e;
       });
     channelRef.current = channel;
     return channel;
   };
-  const sendMessage = msg => {
-    const send = channelRef.current.sendUserMessage(msg);
-    send.onSucceeded(message1 => {
+  const sendMessage = (msg) => {
+    const send = channelRef?.current?.sendUserMessage(msg);
+    send?.onSucceeded((message1: any) => {
       console.log('onSucceeded');
       const newMessage = {
         createdAt: message1.createdAt,
@@ -74,15 +79,15 @@ const Chat = props => {
       };
       setMessage(newMessage);
     });
-    send.onFailed(err => {
+    send.onFailed((err) => {
       console.log('onFailed', err);
     });
-    send.onPending(message2 => {
+    send.onPending(() => {
       console.log('onPending');
     });
   };
 
-  const loadAllMessage = async channelURL => {
+  const loadAllMessage = async (channelURL) => {
     const channel = await getChannel(channelURL);
     const previousMessageList = await channel.createPreviousMessageListQuery();
     let allMessages = [];
@@ -94,15 +99,20 @@ const Chat = props => {
     return allMessages;
   };
 
-  const renderMessage = ({item}) => (
+  const renderMessage = ({ item }) => (
     <View
       style={
         item.sender.userId == data.chat_user_id
           ? styles.userMessage
           : styles.otherMessage
-      }>
+      }
+    >
       {item?.message?.includes('cdn') ? (
-        <Image source={{uri: item.message}} style={{width: 150, height: 150}} resizeMode={"cover"}/>
+        <Image
+          source={{ uri: item.message }}
+          style={{ width: 150, height: 150 }}
+          resizeMode={'cover'}
+        />
       ) : (
         <Text style={styles.messageText}>{item.message}</Text>
       )}
@@ -122,7 +132,7 @@ const Chat = props => {
     });
   };
 
-  const onConnected = userId => {
+  const onConnected = (userId) => {
     console.log(userId);
   };
   const onReconnectStarted = () => {};
@@ -147,56 +157,58 @@ const Chat = props => {
     });
     ref?.current?.groupChannel?.addGroupChannelHandler(
       'CHA_HAN',
-      groupChannelHandler,
+      groupChannelHandler
     );
     ref?.current?.addConnectionHandler('CHA_CONN', connectionHandler);
   };
 
-  const removeConnectionHandler = appChannel => {
+  const removeConnectionHandler = (appChannel) => {
     ref.current.removeConnectionHandler(appChannel);
   };
-  const removeGroupChannelHandler = appChannel => {
+  const removeGroupChannelHandler = (appChannel) => {
     ref.current.groupChannel.removeGroupChannelHandler(appChannel);
   };
 
-  const setPushTriggerOption = pushTriggerOption => {
+  const setPushTriggerOption = (pushTriggerOption) => {
     ref.current.setPushTriggerOption(pushTriggerOption);
   };
 
   // for ios
-  const registerAPNSPushTokenForCurrentUser = token => {
+  const registerAPNSPushTokenForCurrentUser = (token) => {
     ref.current.registerAPNSPushTokenForCurrentUser(token);
   };
   // for android
-  const registerFCMPushTokenForCurrentUser = token => {
+  const registerFCMPushTokenForCurrentUser = (token) => {
     ref.current.registerFCMPushTokenForCurrentUser(token);
   };
 
   const openImagePicker = () => {
-    const options = {
+    const options: ImageLibraryOptions = {
       mediaType: 'photo',
       includeBase64: false,
       maxHeight: 2000,
       maxWidth: 2000,
     };
 
-    launchImageLibrary(options, response => {
+    launchImageLibrary(options, (response: ImagePickerResponse) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('Image picker error: ', response.error);
+      } else if (response.errorMessage) {
+        console.log('Image picker error: ', response.errorMessage);
       } else {
         const source =
           Platform.OS === 'android'
-            ? response.assets[0].uri
-            : response.assets[0].uri.replace('file://', '');
+            ? response.assets?.[0].uri
+            : response.assets?.[0].uri?.replace('file://', '');
         const fileName = encodeURI(source.replace(/^.*[\\\/]/, ''));
 
-        uploadMedia(source, response.assets[0].type, fileName).then(res => {
-          sendMessage({
-            message: res.data.url,
-          })
-        });
+        uploadMedia(source, response.assets?.[0]?.type || '', fileName).then(
+          (res) => {
+            sendMessage({
+              message: res.data.url,
+            });
+          }
+        );
       }
     });
   };
@@ -206,7 +218,7 @@ const Chat = props => {
         ? PERMISSIONS.IOS.PHOTO_LIBRARY
         : parseFloat(Platform.Version + '') > 32
         ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES
-        : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+        : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
     );
     if (
       permission === 'granted' ||
@@ -231,7 +243,7 @@ const Chat = props => {
       init();
       addHandler();
       connect().then(() => {
-        loadAllMessage(`channel_${data.group_id}`).then(res => {
+        loadAllMessage(`channel_${data.group_id}`).then((res) => {
           setMessageList(res);
           setLoading(false);
         });
@@ -251,11 +263,11 @@ const Chat = props => {
           renderItem={renderMessage}
         />
       </View>
-      <View style={{flexDirection: 'row', width: '100%', padding: 10}}>
+      <View style={{ flexDirection: 'row', width: '100%', padding: 10 }}>
         <Button title={'image'} onPress={() => uploadUsingGallery()} />
         <TextInput
           style={styles.input}
-          onChangeText={txt => setTextInput(txt)}
+          onChangeText={(txt) => setTextInput(txt)}
           value={textInput}
           placeholder="type .."
         />
