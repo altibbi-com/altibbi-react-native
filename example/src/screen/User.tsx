@@ -170,19 +170,19 @@ const User = () => {
           onPress={() => {
             const params: UserType = {
               name,
-              phoneNumber,
+              phone_number: phoneNumber,
               email,
-              dateOfBirth,
+              date_of_birth: dateOfBirth,
               gender,
-              insuranceId,
-              policyNumber,
-              nationalityNumber,
+              insurance_id: insuranceId,
+              policy_number: policyNumber,
+              nationality_number: nationalityNumber,
               height,
               weight,
-              bloodType,
+              blood_type: bloodType,
               smoker,
               alcoholic,
-              maritalStatus,
+              marital_status: maritalStatus,
             };
             createUser(params).then((res) => {
               console.log(res);

@@ -1,19 +1,19 @@
 interface ConstantObject {
-  domain: string;
-  language: string;
   token: string;
+  baseURL: string;
+  language: string;
 }
 
 export let TBIConstants: ConstantObject = {
-  domain: '',
-  language: 'ar',
   token: '',
+  baseURL: '',
+  language: 'ar',
 };
 
-export const init = (domain: string, language: string, token: string) => {
+export const init = (token: string, baseURL: string, language: string) => {
   TBIConstants = {
-    domain,
-    language,
     token,
+    baseURL,
+    language,
   };
 };

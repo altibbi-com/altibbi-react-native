@@ -10,7 +10,7 @@ import { getLastConsultation } from 'react-native-altibbi';
 import { TBISocket } from 'react-native-altibbi';
 
 const WaitingRoom = (props) => {
-  const { channel, socketKey, consultationId } = props?.route?.params;
+  const { channel, socketParams, consultationId } = props?.route?.params;
   const instance: TBISocket = TBISocket.getInstance();
 
   const disconnect = () => instance?.disconnect();
@@ -85,18 +85,18 @@ const WaitingRoom = (props) => {
   const connect = async () => {
     try {
       await instance.init({
-        apiKey: socketKey,
-        cluster: 'eu',
-        authEndpoint: `${TBIConstants.domain}/v1/auth/pusher?access-token=${TBIConstants.token}`,
-        onConnectionStateChange,
-        onError,
-        onEvent,
-        onSubscriptionSucceeded,
-        onSubscriptionError,
-        onDecryptionFailure,
-        onMemberAdded,
-        onMemberRemoved,
-        onSubscriptionCount,
+        ...socketParams,
+        ...{
+          onConnectionStateChange,
+          onError,
+          onEvent,
+          onSubscriptionSucceeded,
+          onSubscriptionError,
+          onDecryptionFailure,
+          onMemberAdded,
+          onMemberRemoved,
+          onSubscriptionCount,
+        },
       });
       await instance.subscribe({ channelName: channel });
       await instance.connect();

@@ -1,5 +1,5 @@
 import { TBIConstants } from './service';
-import { UserType } from './types';
+import { ConsultationType, ResponseType, UserType } from './types';
 
 interface MethodsObject {
   get: string;
@@ -11,7 +11,7 @@ interface MethodsObject {
 interface ConsultationObject {
   question: string;
   medium: string;
-  userId: number;
+  user_id: number;
   mediaIds?: string[];
   followUpId?: string;
 }
@@ -64,9 +64,9 @@ export const request = async ({
   fileName,
   download,
 }: RequestParamsInterface) => {
-  if (!TBIConstants.domain) {
+  if (!TBIConstants.baseURL) {
     return {
-      message: 'Add your domain to Init',
+      message: 'Add your baseURL to Init',
     };
   }
 
@@ -76,7 +76,7 @@ export const request = async ({
     'accept-language': TBIConstants.language,
   };
 
-  let url = `${TBIConstants.domain}/v1/${endPoint}`;
+  let url = `${TBIConstants.baseURL}/v1/${endPoint}`;
   let body;
   if (method === Methods.get) {
     url = url + '?' + new URLSearchParams(data).toString();
@@ -115,81 +115,138 @@ export const request = async ({
   };
 };
 
-export const getUser = (userId: string) =>
-  request({
+export const getUser = async (
+  user_id: string
+): Promise<ResponseType<UserType>> => {
+  const response: ResponseType<UserType> = await request({
     method: Methods.get,
     data: {},
-    endPoint: `users/${userId}`,
+    endPoint: `users/${user_id}`,
   });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
+};
 
-export const getUsers = (page: number = 1, perPage: number = 20) =>
-  request({
+export const getUsers = async (
+  page: number = 1,
+  perPage: number = 20
+): Promise<ResponseType<UserType[]>> => {
+  const response: ResponseType<UserType[]> = await request({
     method: Methods.get,
     data: { page, 'per-page': perPage },
     endPoint: `users`,
   });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
+};
 
-export const createUser = (user: UserType) =>
-  request({
+export const createUser = async (
+  user: UserType
+): Promise<ResponseType<UserType>> => {
+  const response: ResponseType<UserType> = await request({
     method: Methods.post,
     data: user,
     endPoint: `users`,
   });
-export const updateUser = (user: UserType, userId: string) =>
-  request({
+  if (response.status === 201) {
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
+};
+
+export const updateUser = async (
+  user: UserType,
+  user_id: string
+): Promise<ResponseType<UserType>> => {
+  const response: ResponseType<UserType> = await request({
     method: Methods.put,
     data: user,
-    endPoint: `users/${userId}`,
+    endPoint: `users/${user_id}`,
   });
+  if (response.status === 201) {
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
+};
 
-export const deleteUser = (userId: string) =>
-  request({
+export const deleteUser = async (
+  user_id: string
+): Promise<ResponseType<string>> => {
+  const response: ResponseType<string> = await request({
     method: Methods.delete,
     data: {},
-    endPoint: `users/${userId}`,
+    endPoint: `users/${user_id}`,
   });
+  if (response.status === 204) {
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
+};
 
 export const createConsultation = async ({
   question,
   medium,
-  userId,
+  user_id,
   mediaIds,
   followUpId,
-}: ConsultationObject) => {
-  if (!question || !medium || !userId) {
-    return { message: 'missing field' };
+}: ConsultationObject): Promise<ResponseType<ConsultationType>> => {
+  if (!question || !medium || !user_id) {
+    throw Error('missing field');
   }
 
   const data = {
     question,
     medium,
-    user_id: userId,
+    user_id,
     media_ids: mediaIds,
     expand:
       'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
       'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
     followUpId,
   };
-  return await request({
+  const response: ResponseType<ConsultationType> = await request({
     method: Methods.post,
     data,
     endPoint: `consultations`,
   });
+
+  if (response.status === 201) {
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
 };
 
-export const getConsultationInfo = (consultationId: number) =>
-  request({
+export const getConsultationInfo = async (
+  consultation_id: number
+): Promise<ResponseType<ConsultationType>> => {
+  const response: ResponseType<ConsultationType> = await request({
     method: Methods.get,
     data: {
       expand:
         'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
         'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
     },
-    endPoint: `consultations/${consultationId}`,
+    endPoint: `consultations/${consultation_id}`,
   });
+  if (response.status === 200) {
+    response.data.socketParams = {
+      apiKey: response?.data?.[0]?.pusherAppKey,
+      cluster: 'eu',
+      authEndpoint: `${TBIConstants.baseURL}/v1/auth/pusher?access-token=${TBIConstants.token}`,
+    };
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
+};
 
-export const getLastConsultation = () =>
-  request({
+export const getLastConsultation = async (): Promise<
+  ResponseType<ConsultationType[]>
+> => {
+  const response: ResponseType<ConsultationType[]> = await request({
     method: Methods.get,
     data: {
       'per-page': 1,
@@ -200,43 +257,72 @@ export const getLastConsultation = () =>
     },
     endPoint: `consultations`,
   });
+  if (response.status === 200) {
+    response.data[0].socketParams = {
+      apiKey: response.data[0].pusherAppKey,
+      cluster: 'eu',
+      authEndpoint: `${TBIConstants.baseURL}/v1/auth/pusher?access-token=${TBIConstants.token}`,
+    };
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
+};
 
 export const getConsultationList = async (
-  userId: number,
+  user_id: number,
   page: number = 1,
   perPage = 20
-) => {
-  if (!userId) {
-    return { message: 'missing user id' };
+): Promise<ResponseType<ConsultationType[]>> => {
+  if (!user_id) {
+    throw Error('missing user id');
   }
 
-  return await request({
+  const response = await request({
     method: Methods.get,
     data: {
       page,
       'per-page': perPage,
-      'filter[user_id]': userId,
+      'filter[user_id]': user_id,
       'expand':
         'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
         'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
     },
     endPoint: `consultations`,
   });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
 };
 
-export const deleteConsultation = (consultationId: number) =>
-  request({
+export const deleteConsultation = async (
+  consultation_id: number
+): Promise<ResponseType<string>> => {
+  const response: ResponseType<string> = await request({
     method: Methods.delete,
     data: {},
-    endPoint: `consultations/${consultationId}`,
+    endPoint: `consultations/${consultation_id}`,
   });
+  if (response.status === 204) {
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
+};
 
-export const cancelConsultation = (consultationId: number) =>
-  request({
-    method: Methods.post,
-    data: {},
-    endPoint: `consultations/${consultationId}/cancel`,
-  });
+export const cancelConsultation = async (
+  consultation_id: number
+): Promise<ResponseType<{ consultation_id: number; status: string }>> => {
+  const response: ResponseType<{ consultation_id: number; status: string }> =
+    await request({
+      method: Methods.post,
+      data: {},
+      endPoint: `consultations/${consultation_id}/cancel`,
+    });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response?.data));
+};
 
 export const uploadMedia = (path: string, type: string, fileName: string) =>
   request({
@@ -248,9 +334,9 @@ export const uploadMedia = (path: string, type: string, fileName: string) =>
     fileName,
   });
 
-export const getPrescription = (consultationId: number) =>
+export const getPrescription = (consultation_id: number) =>
   request({
     method: Methods.get,
-    endPoint: `consultations/${consultationId}/download-prescription`,
+    endPoint: `consultations/${consultation_id}/download-prescription`,
     download: true,
   });

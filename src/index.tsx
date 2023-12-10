@@ -63,13 +63,32 @@ export {
   type TBISocketAuthorizerResult,
 } from './scoket';
 
-export {
+export type {
+  ResponseType,
+  MediumType,
+  BloodType,
+  MaritalStatus,
+  BoolString,
+  GenderType,
   UserType,
-  type BloodType,
-  type MaritalStatus,
-  type BoolString,
-  type GenderType,
-  type MediumType,
+  MediaType,
+  ChatData,
+  ChatHistory,
+  ChatConfig,
+  VoipConfig,
+  Recommendation,
+  RecommendationData,
+  RecommendationLab,
+  RecommendationLabItem,
+  RecommendationDrug,
+  RecommendationFdaDrug,
+  RecommendationICD10,
+  RecommendationSymptom,
+  RecommendationDiagnosis,
+  RecommendationFollowUp,
+  RecommendationDoctorReferral,
+  RecommendationPostCallAnswer,
+  ConsultationType,
 } from './types';
 export {
   materialStatusArray,
