@@ -86,7 +86,7 @@ export const request = async ({
       uri: path,
       type: type,
       name: fileName,
-    });
+    } as any);
     body = formData;
     headers['Content-Type'] = 'multipart/form-data';
   } else {

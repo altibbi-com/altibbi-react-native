@@ -3,7 +3,7 @@ import OT, {
   OTSession,
   OTSubscriber,
   OTSubscriberView,
-} from './video';
+} from 'react-native-altibbi/src/video';
 
 export {
   OTSession as TBISession,
