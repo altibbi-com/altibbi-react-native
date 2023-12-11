@@ -16,7 +16,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://bitbucket.org/altibbi/react-native-altibbi-sdk/src/master/.git", :tag => "#{s.version}" }
   s.dependency 'React'
   s.dependency 'PusherSwift', '~> 10.1.1'
-  #s.dependency 'OpenTok','~> 2.21.3'
   s.dependency 'OTXCFramework','2.26.1'
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"

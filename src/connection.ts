@@ -1,5 +1,5 @@
 import { TBIConstants } from './service';
-import { ConsultationType, MediaType, ResponseType, UserType } from './types';
+import type { ConsultationType, MediaType, ResponseType, UserType } from './types';
 
 interface MethodsObject {
   get: string;
@@ -233,11 +233,13 @@ export const getConsultationInfo = async (
     endPoint: `consultations/${consultation_id}`,
   });
   if (response.status === 200) {
-    response.data.socketParams = {
-      apiKey: response?.data?.[0]?.pusherAppKey,
-      cluster: 'eu',
-      authEndpoint: `${TBIConstants.baseURL}/v1/auth/pusher?access-token=${TBIConstants.token}`,
-    };
+    if(response.data && response.data.pusherAppKey){
+      response.data.socketParams = {
+        apiKey: response.data.pusherAppKey,
+        cluster: 'eu',
+        authEndpoint: `${TBIConstants.baseURL}/v1/auth/pusher?access-token=${TBIConstants.token}`,
+      };
+    }
     return response;
   }
   throw Error(JSON.stringify(response));
@@ -258,11 +260,13 @@ export const getLastConsultation = async (): Promise<
     endPoint: `consultations`,
   });
   if (response.status === 200) {
-    response.data[0].socketParams = {
-      apiKey: response.data[0].pusherAppKey,
-      cluster: 'eu',
-      authEndpoint: `${TBIConstants.baseURL}/v1/auth/pusher?access-token=${TBIConstants.token}`,
-    };
+    if(response.data && response.data[0] &&  response.data[0].pusherAppKey){
+      response.data[0].socketParams = {
+        apiKey: response?.data?.[0]?.pusherAppKey,
+        cluster: 'eu',
+        authEndpoint: `${TBIConstants.baseURL}/v1/auth/pusher?access-token=${TBIConstants.token}`,
+      };
+    }
     return response;
   }
   throw Error(JSON.stringify(response));

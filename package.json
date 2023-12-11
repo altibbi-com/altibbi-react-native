@@ -1,7 +1,7 @@
 {
   "name": "react-native-altibbi",
-  "version": "0.1.2",
-  "description": "Altibbi Sdk",
+  "version": "0.1.3",
+  "description": "React native SDK provides integration for the Altibbi services, including video consultation, text consultation, push Welcome to the React Native SDK for Altibbi services, your comprehensive solution for integrating health consultation services into your React Native applications. This SDK enables video and text consultations, push notifications, and many other features to provide a seamless healthcare experience. project.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "@types/index.d.ts",
@@ -37,15 +37,16 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "altibbi"
   ],
-  "repository": "https://github.com/altibbi-com/altibb-react-native",
-  "author": "Altibbi Tech team <mobile@altibbi.com> (https://github.com/altibbi-com/altibb-react-native)",
+  "repository": "https://github.com/altibbi-com/altibbi-react-native",
+  "author": "Altibbi Tech team <mobile@altibbi.com> (https://github.com/altibbi-com/altibbi-react-native)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/altibbi-com/altibb-react-native/issues"
+    "url": "https://github.com/altibbi-com/altibbi-react-native/issues"
   },
-  "homepage": "https://github.com/altibbi-com/altibb-react-native/readme",
+  "homepage": "https://github.com/altibbi-com/altibbi-react-native/readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
