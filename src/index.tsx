@@ -1,8 +1,10 @@
-const OT: any = require('./video/OT').default;
-const OTPublisher: any = require('./video/OTPublisher').default;
-const OTSession: any = require('./video/OTSession').default;
-const OTSubscriber: any = require('./video/OTSubscriber').default;
-const OTSubscriberView: any = require('./video/views/OTSubscriberView').default;
+import OT, {
+  OTPublisher,
+  OTSession,
+  OTSubscriber,
+  OTSubscriberView,
+} from 'react-native-altibbi/src/video';
+
 export {
   OTSession as TBISession,
   OTPublisher as TBIPublisher,
