@@ -30,7 +30,9 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib"
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "prepublishOnly": "tsc",
+    "build": "tsc"
   },
   "keywords": [
     "react-native",
@@ -76,7 +78,7 @@
     "react-test-renderer": "18.2.0",
     "release-it": "^15.0.0",
     "turbo": "^1.10.7",
-    "typescript": "^5.0.2"
+    "typescript": "^5.3.3"
   },
   "resolutions": {
     "@types/react": "17.0.21"
