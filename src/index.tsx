@@ -1,17 +1,19 @@
-import OT, {
+import {
+  OT,
   OTPublisher,
   OTSession,
   OTSubscriber,
   OTSubscriberView,
-} from 'react-native-altibbi/src/video';
+} from './video';
 
 export {
+  OT,
   OTSession as TBISession,
   OTPublisher as TBIPublisher,
   OTSubscriber as TBISubscriber,
   OTSubscriberView as TBISubscriberView,
-  OT as TBIVideo,
 };
+
 
 export { default as AltibbiChat } from '@sendbird/chat';
 
@@ -97,5 +99,3 @@ export {
   genderTypeArray,
   MediumArray,
 } from './data';
-
-

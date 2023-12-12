@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "rootDir": ".",
     "paths": {
       "react-native-altibbi": ["./src/index"]
@@ -32,7 +35,7 @@
   },
   "include": [
     "src/**/*",
-    "@types/index.d.ts"
+    "src/**/*.d.ts",
   ],
   "exclude": ["example"]
 }
