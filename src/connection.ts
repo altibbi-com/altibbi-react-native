@@ -284,6 +284,7 @@ export const getConsultationList = async (
 ): Promise<ResponseType<ConsultationType[]>> => {
   let data = {
     page,
+    'sort': '-id',
     'per-page': perPage,
     'expand':
       'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
