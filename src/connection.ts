@@ -282,17 +282,26 @@ export const getConsultationList = async (
   page: number = 1,
   perPage = 20
 ): Promise<ResponseType<ConsultationType[]>> => {
-  let data = {
-    page,
-    'sort': '-id',
-    'per-page': perPage,
-    'expand':
-      'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
-      'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
-  };
-
+  let data;
   if (user_id) {
-    data['filter[user_id]'] = user_id;
+    data = {
+      page,
+      'sort': '-id',
+      'per-page': perPage,
+      'filter[user_id]': user_id,
+      'expand':
+        'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
+        'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
+    };
+  } else {
+    data = {
+      page,
+      'sort': '-id',
+      'per-page': perPage,
+      'expand':
+        'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
+        'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
+    };
   }
 
   const response = await request({
