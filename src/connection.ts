@@ -1,5 +1,10 @@
 import { TBIConstants } from './service';
-import type { ConsultationType, MediaType, ResponseType, UserType } from './types';
+import type {
+  ConsultationType,
+  MediaType,
+  ResponseType,
+  UserType,
+} from './types';
 
 interface MethodsObject {
   get: string;
@@ -233,7 +238,7 @@ export const getConsultationInfo = async (
     endPoint: `consultations/${consultation_id}`,
   });
   if (response.status === 200) {
-    if(response.data && response.data.pusherAppKey){
+    if (response.data && response.data.pusherAppKey) {
       response.data.socketParams = {
         apiKey: response.data.pusherAppKey,
         cluster: 'eu',
@@ -260,7 +265,7 @@ export const getLastConsultation = async (): Promise<
     endPoint: `consultations`,
   });
   if (response.status === 200) {
-    if(response.data && response.data[0] &&  response.data[0].pusherAppKey){
+    if (response.data && response.data[0] && response.data[0].pusherAppKey) {
       response.data[0].socketParams = {
         apiKey: response?.data?.[0]?.pusherAppKey,
         cluster: 'eu',
@@ -273,24 +278,25 @@ export const getLastConsultation = async (): Promise<
 };
 
 export const getConsultationList = async (
-  user_id: number,
+  user_id?: number,
   page: number = 1,
   perPage = 20
 ): Promise<ResponseType<ConsultationType[]>> => {
-  if (!user_id) {
-    throw Error('missing user id');
+  let data = {
+    page,
+    'per-page': perPage,
+    'expand':
+      'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
+      'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
+  };
+
+  if (user_id) {
+    data['filter[user_id]'] = user_id;
   }
 
   const response = await request({
     method: Methods.get,
-    data: {
-      page,
-      'per-page': perPage,
-      'filter[user_id]': user_id,
-      'expand':
-        'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
-        'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
-    },
+    data: data,
     endPoint: `consultations`,
   });
   if (response.status === 200) {
