@@ -53,6 +53,7 @@ export {
   deleteConsultation,
   cancelConsultation,
   getPrescription,
+  rateConsultation,
 } from './connection';
 
 export { TBIConstants, init } from './service';

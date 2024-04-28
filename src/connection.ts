@@ -369,3 +369,18 @@ export const getPrescription = (consultation_id: number) =>
     endPoint: `consultations/${consultation_id}/download-prescription`,
     download: true,
   });
+
+export const rateConsultation = async (
+  consultation_id: number,
+  score: number
+): Promise<ResponseType<string>> => {
+  const response: ResponseType<string> = await request({
+    method: Methods.post,
+    data: { score },
+    endPoint: `consultations/${consultation_id}/rate`,
+  });
+  if (response.status === 204) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};

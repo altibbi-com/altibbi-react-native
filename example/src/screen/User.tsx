@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import type { BloodType, BoolString, GenderType, MaritalStatus, UserType } from 'react-native-altibbi';
+import type { BloodType, BoolString, GenderType, MaritalStatus, UserType, relationType } from 'react-native-altibbi';
 import {
   bloodTypeArray,
   boolStringArray,
@@ -12,6 +12,7 @@ import {
   materialStatusArray,
 } from 'react-native-altibbi';
 import { Radio } from '../component/radio';
+import { relationTypeArray } from '../../../src/data';
 
 const styles = StyleSheet.create({
   textInput: {
@@ -60,6 +61,7 @@ const User = () => {
   const [maritalStatus, setMaritalStatus] = useState<MaritalStatus>();
   const [id, setID] = useState<string>('');
   const [id2, setID2] = useState<string>('');
+  const [relationType, setRelationType] = useState<relationType>();
 
   return (
     <ScrollView style={{ backgroundColor: '#F3F3F4' }}>
@@ -151,7 +153,12 @@ const User = () => {
         <Radio
           pick={[bloodType, setBloodType]}
           array={bloodTypeArray}
-          title={'Gender'}
+          title={'bloodType'}
+        />
+        <Radio
+          pick={[relationType, setRelationType]}
+          array={relationTypeArray}
+          title={'relationType'}
         />
         <TouchableOpacity
           style={styles.button}
@@ -171,6 +178,7 @@ const User = () => {
               smoker,
               alcoholic,
               marital_status: maritalStatus,
+              relation_type: relationType,
             };
             createUser(params).then((res) => {
               console.log(res);

@@ -3,6 +3,17 @@ type BloodType = 'A+' | 'B+' | 'AB+' | 'O+' | 'A-' | 'B-' | 'AB-' | 'O-';
 type MaritalStatus = 'single' | 'married' | 'divorced' | 'widow';
 type BoolString = 'yes' | 'no';
 type GenderType = 'male' | 'female';
+type RelationType =
+  | 'personal'
+  | 'father'
+  | 'mother'
+  | 'sister'
+  | 'brother'
+  | 'child'
+  | 'husband'
+  | 'wife'
+  | 'other';
+
 interface UserType {
   id?: number;
   name?: string;
@@ -21,6 +32,7 @@ interface UserType {
   marital_status?: MaritalStatus;
   created_at?: string;
   updated_at?: string;
+  relation_type?: RelationType;
 }
 interface MediaType {
   id?: string;
@@ -155,6 +167,7 @@ interface ConsultationType {
   chatHistory: ChatHistory;
   recommendation?: Recommendation;
   socketParams?: SocketParams;
+  doctorAverageRating?: number;
 }
 export type {
   ResponseType,
@@ -163,6 +176,7 @@ export type {
   MaritalStatus,
   BoolString,
   GenderType,
+  RelationType,
   UserType,
   MediaType,
   ChatData,

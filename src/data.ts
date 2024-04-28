@@ -25,3 +25,15 @@ export const bloodTypeArray: BloodType[] = [
 export const boolStringArray: BoolString[] = ['yes', 'no'];
 export const genderTypeArray: GenderType[] = ['male', 'female'];
 export const MediumArray: MediumType[] = ['chat', 'gsm', 'voip', 'video'];
+
+export const relationTypeArray: string[] = [
+  'personal',
+  'father',
+  'mother',
+  'sister',
+  'brother',
+  'child',
+  'husband',
+  'wife',
+  'other',
+];
