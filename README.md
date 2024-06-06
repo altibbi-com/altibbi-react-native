@@ -113,14 +113,14 @@ const response = await updateUser(user_id)
 Create and manage consultations using our suite of functions:
 
 
-| APi                 | params                                                                               |
-|---------------------|--------------------------------------------------------------------------------------|
-| createConsultation  | question (required)  , medium (required) , userId (required) , mediaIds , followUpId |
-| getConsultationInfo | consultationId                                                                       |
-| getLastConsultation |                                                                                      |
-| getConsultationList | userId (required), page, perPage                                                     |
-| deleteConsultation  | consultationId                                                                       |
-| cancelConsultation  | consultationId                                                                       |
+| APi                 | params                                                                                           |
+|---------------------|--------------------------------------------------------------------------------------------------|
+| createConsultation  | question (required)  , medium (required) , userId (required) , mediaIds , parent_consultation_id |
+| getConsultationInfo | consultationId                                                                                   |
+| getLastConsultation |                                                                                                  |
+| getConsultationList | userId (required), page, perPage                                                                 |
+| deleteConsultation  | consultationId                                                                                   |
+| cancelConsultation  | consultationId                                                                                   |
 
 #### createConsultation
 
