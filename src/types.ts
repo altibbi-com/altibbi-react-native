@@ -24,6 +24,7 @@ interface UserType {
   insurance_id?: string;
   policy_number?: string;
   nationality_number?: string;
+  avatar_media_id?: string;
   height?: string;
   weight?: string;
   blood_type?: BloodType;
@@ -76,9 +77,11 @@ interface ChatConfig {
 interface VoipConfig {
   id?: number;
   consultation_id?: number;
-  apiKey?: string;
-  callId?: string;
+  api_key?: string;
+  call_id?: string;
   token?: string;
+  created_at?: string
+  updated_at?: string
 }
 interface Recommendation {
   id?: number;
@@ -120,6 +123,7 @@ interface RecommendationFdaDrug {
   relationWithFood?: string;
   specialInstructions?: string;
   routeOfAdministration?: string;
+  registrationNumber?: string;
 }
 interface RecommendationICD10 {
   symptom?: RecommendationSymptom[] | null;
@@ -145,16 +149,18 @@ interface RecommendationPostCallAnswer {
 }
 interface ConsultationType {
   id?: number;
-  userId?: number;
+  user_id?: number;
   question?: string;
-  doctorName?: string;
-  doctorAvatar?: string;
+  doctor_name?: string;
+  doctor_avatar?: string;
   medium?: string;
   status?: string;
-  isFulfilled?: number;
-  parentConsultationId?: number;
-  createdAt?: string;
-  updatedAt?: string;
+  is_fulfilled?: number;
+  parent_consultation_id?: number;
+  created_at?: string;
+  updated_at?: string;
+  closed_at?: string;
+  accepted_at?: string;
   user?: UserType;
   parentConsultation?: ConsultationType;
   media?: MediaType[];
@@ -164,10 +170,10 @@ interface ConsultationType {
   chatConfig?: ChatConfig;
   voipConfig?: VoipConfig;
   videoConfig?: VoipConfig;
-  chatHistory: ChatHistory;
+  chatHistory?: ChatHistory;
   recommendation?: Recommendation;
   socketParams?: SocketParams;
-  doctorAverageRating?: number;
+  doctor_average_rating?: number;
 }
 export type {
   ResponseType,

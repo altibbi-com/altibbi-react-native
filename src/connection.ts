@@ -18,7 +18,7 @@ interface ConsultationObject {
   medium: string;
   user_id: number;
   mediaIds?: string[];
-  followUpId?: string;
+  parent_consultation_id?: number;
 }
 
 interface RequestParamsInterface {
@@ -197,7 +197,7 @@ export const createConsultation = async ({
   medium,
   user_id,
   mediaIds,
-  followUpId,
+  parent_consultation_id,
 }: ConsultationObject): Promise<ResponseType<ConsultationType>> => {
   if (!question || !medium || !user_id) {
     throw Error('missing field');
@@ -211,7 +211,7 @@ export const createConsultation = async ({
     expand:
       'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
       'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
-    followUpId,
+    parent_consultation_id,
   };
   const response: ResponseType<ConsultationType> = await request({
     method: Methods.post,
