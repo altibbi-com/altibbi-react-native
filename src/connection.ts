@@ -384,3 +384,36 @@ export const rateConsultation = async (
   }
   throw Error(JSON.stringify(response));
 };
+
+export const getMediaList = async (
+  page: number = 1,
+  perPage = 20
+): Promise<ResponseType<ConsultationType[]>> => {
+  const response = await request({
+    method: Methods.get,
+    data: {
+      page,
+      'sort': '-id',
+      'per-page': perPage,
+    },
+    endPoint: `media`,
+  });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+
+export const deleteMedia = async (
+  mediaId: string
+): Promise<ResponseType<string>> => {
+  const response: ResponseType<string> = await request({
+    method: Methods.delete,
+    data: {},
+    endPoint: `media/${mediaId}`,
+  });
+  if (response.status === 204) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
