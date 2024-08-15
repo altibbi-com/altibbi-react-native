@@ -179,7 +179,7 @@ const Consultation = (props) => {
     try {
       uploadMedia(
         `${Platform.OS === 'android' ? 'file://' : ''}` + filePath,
-        'application/pdf',
+        'text/csv',
         fileName
       ).then((res) => {
         console.log(res)
