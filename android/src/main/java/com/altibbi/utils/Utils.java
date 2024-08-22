@@ -1,21 +1,22 @@
 package com.altibbi.utils;
 
-import com.facebook.react.bridge.ReadableArray;
-import com.opentok.android.BaseVideoCapturer.VideoContentHint;
 import com.opentok.android.OpentokError;
 import com.opentok.android.Publisher;
 import com.opentok.android.PublisherKit;
 import com.opentok.android.PublisherKit.VideoTransformer;
-import com.opentok.android.Session.Builder.IceServer;
-import com.opentok.android.Session.Builder.IncludeServers;
-import com.opentok.android.Session.Builder.TransportPolicy;
 import com.opentok.android.Subscriber;
 import com.opentok.android.SubscriberKit;
-import com.altibbi.OTRN;
+import com.opentok.android.Session.Builder.TransportPolicy;
+import com.opentok.android.Session.Builder.IncludeServers;
+import com.opentok.android.Session.Builder.IceServer;
+import com.opentok.android.BaseVideoCapturer.VideoContentHint;
+import com.opentokreactnative.OTRN;
+
+import com.facebook.react.bridge.ReadableArray;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
 
 public final class Utils {
 
@@ -105,10 +106,6 @@ public final class Utils {
         if (transformerList != null) {
             for (int i = 0; i < transformerList.size(); i++) {
                 String transformerName = transformerList.getMap(i).getString("name");
-                if (transformerName == "BackgroundReplacement" ) {
-                    // Only implemented in iOS -- ignore in Androd for now.
-                    continue;
-                }
                 VideoTransformer transformer = publisher.new VideoTransformer(
                     transformerName,
                     transformerList.getMap(i).getString("properties")

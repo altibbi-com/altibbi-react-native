@@ -1,15 +1,6 @@
-declare const OT: any;
-declare const nativeEvents: NativeEventEmitter;
-declare function checkAndroidPermissions(): Promise<any>;
-declare function setNativeEvents(events: any): void;
-declare function removeNativeEvents(events: any): void;
+export const OT: any;
+export const nativeEvents: NativeEventEmitter;
+export function checkAndroidPermissions(audioTrack: any, videoTrack: any, isScreenSharing: any): Promise<any>;
+export function setNativeEvents(events: any): void;
+export function removeNativeEvents(events: any): void;
 import { NativeEventEmitter } from 'react-native';
-
-// Export the declared types
-export {
-  OT,
-  nativeEvents,
-  checkAndroidPermissions,
-  setNativeEvents,
-  removeNativeEvents,
-};
