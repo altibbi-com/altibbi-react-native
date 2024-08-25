@@ -16,7 +16,7 @@
     "buffer": "^6.0.3",
     "react": "18.2.0",
     "react-native": "0.72.7",
-    "react-native-altibbi": "git@github.com:altibbi-com/altibbi-react-native.git#main",
+    "react-native-altibbi": "git@github.com:altibbi-com/altibbi-react-native.git#update_open_tok",
     "react-native-image-picker": "^7.0.3",
     "react-native-permissions": "^3.10.1",
     "react-native-safe-area-context": "^4.7.4",

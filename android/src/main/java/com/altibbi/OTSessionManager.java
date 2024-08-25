@@ -7,6 +7,9 @@ import android.widget.FrameLayout;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+
+import com.altibbi.utils.EventUtils;
+import com.altibbi.utils.Utils;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -38,8 +41,6 @@ import com.opentok.android.Session.Builder.TransportPolicy;
 import com.opentok.android.Session.Builder.IncludeServers;
 import com.opentok.android.Session.Builder.IceServer;
 import com.opentok.android.AudioDeviceManager;
-import com.opentokreactnative.utils.EventUtils;
-import com.opentokreactnative.utils.Utils;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -185,8 +186,8 @@ public class OTSessionManager extends ReactContextBaseJavaModule
                     .videoTrack(videoTrack)
                     .name(name)
                     .audioBitrate(audioBitrate)
-                    .publisherAudioFallbackEnabled​(publisherAudioFallback)
-                    .subscriberAudioFallbackEnabled​(subscriberAudioFallback)
+                    .publisherAudioFallbackEnabled(publisherAudioFallback)
+                    .subscriberAudioFallbackEnabled(subscriberAudioFallback)
                     .resolution(Publisher.CameraCaptureResolution.valueOf(resolution))
                     .frameRate(Publisher.CameraCaptureFrameRate.valueOf(frameRate))
                     .build();

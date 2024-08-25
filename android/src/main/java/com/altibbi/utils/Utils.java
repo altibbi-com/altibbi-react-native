@@ -1,5 +1,6 @@
 package com.altibbi.utils;
 
+import com.altibbi.OTRN;
 import com.opentok.android.OpentokError;
 import com.opentok.android.Publisher;
 import com.opentok.android.PublisherKit;
@@ -10,7 +11,6 @@ import com.opentok.android.Session.Builder.TransportPolicy;
 import com.opentok.android.Session.Builder.IncludeServers;
 import com.opentok.android.Session.Builder.IceServer;
 import com.opentok.android.BaseVideoCapturer.VideoContentHint;
-import com.opentokreactnative.OTRN;
 
 import com.facebook.react.bridge.ReadableArray;
 
