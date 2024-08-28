@@ -9,11 +9,11 @@
 import Foundation
 
 class EventUtils {
-    
+
     static var sessionPreface: String = "session:";
     static var publisherPreface: String = "publisher:";
     static var subscriberPreface: String = "subscriber:";
-    
+
     static func prepareJSConnectionEventData(_ connection: OTConnection) -> Dictionary<String, Any> {
         var connectionInfo: Dictionary<String, Any> = [:];
         guard connection != nil else { return connectionInfo }
@@ -22,7 +22,7 @@ class EventUtils {
         connectionInfo["data"] = connection.data;
         return connectionInfo;
     }
-    
+
     static func prepareJSStreamEventData(_ stream: OTStream) -> Dictionary<String, Any> {
         var streamInfo: Dictionary<String, Any> = [:];
         guard OTRN.sharedState.sessions[stream.session.sessionId] != nil else { return streamInfo }
@@ -39,14 +39,14 @@ class EventUtils {
         streamInfo["videoType"] = stream.videoType == OTStreamVideoType.screen ? "screen" : "camera"
         return streamInfo;
     }
-    
+
     static func prepareJSErrorEventData(_ error: OTError) -> Dictionary<String, Any> {
         var errorInfo: Dictionary<String, Any> = [:];
         errorInfo["code"] = error.code;
         errorInfo["message"] = error.localizedDescription;
         return errorInfo;
     }
-    
+
     static func prepareStreamPropertyChangedEventData(_ changedProperty: String, oldValue: Any, newValue: Any, stream: Dictionary<String, Any>) -> Dictionary<String, Any> {
         var streamPropertyEventData: Dictionary<String, Any> = [:];
         streamPropertyEventData["oldValue"] = oldValue;
@@ -96,7 +96,7 @@ class EventUtils {
         }
         return statsArray;
     }
-    
+
     static func prepareSubscriberVideoNetworkStatsEventData(_ videoStats: OTSubscriberKitVideoNetworkStats) -> Dictionary<String, Any> {
         var videoStatsEventData: Dictionary<String, Any> = [:];
         videoStatsEventData["videoPacketsLost"] = videoStats.videoPacketsLost;
@@ -105,7 +105,7 @@ class EventUtils {
         videoStatsEventData["timestamp"] = videoStats.timestamp;
         return videoStatsEventData;
     }
-    
+
     static func prepareSubscriberAudioNetworkStatsEventData(_ audioStats: OTSubscriberKitAudioNetworkStats) -> Dictionary<String, Any> {
         var audioStatsEventData: Dictionary<String, Any> = [:];
         audioStatsEventData["audioPacketsLost"] = audioStats.audioPacketsLost;
@@ -114,7 +114,7 @@ class EventUtils {
         audioStatsEventData["timestamp"] = audioStats.timestamp;
         return audioStatsEventData;
     }
-    
+
     static func prepareJSSessionEventData(_ session: OTSession) -> Dictionary<String, Any> {
         var sessionInfo: Dictionary<String, Any> = [:];
         sessionInfo["sessionId"] = session.sessionId;
@@ -122,11 +122,50 @@ class EventUtils {
         sessionInfo["connection"] = prepareJSConnectionEventData(connection);
         return sessionInfo;
     }
-    
+
     static func getSupportedEvents() -> [String] {
-        return ["\(sessionPreface)streamCreated", "\(sessionPreface)streamDestroyed", "\(sessionPreface)sessionDidConnect", "\(sessionPreface)sessionDidDisconnect", "\(sessionPreface)connectionCreated", "\(sessionPreface)connectionDestroyed", "\(sessionPreface)didFailWithError", "\(publisherPreface)streamCreated", "\(sessionPreface)signal", "\(publisherPreface)streamDestroyed", "\(publisherPreface)didFailWithError", "\(publisherPreface)audioLevelUpdated", "\(publisherPreface)rtcStatsReport", "\(subscriberPreface)subscriberDidConnect", "\(subscriberPreface)subscriberDidDisconnect", "\(subscriberPreface)didFailWithError", "\(subscriberPreface)videoNetworkStatsUpdated", "\(subscriberPreface)audioNetworkStatsUpdated", "\(subscriberPreface)audioLevelUpdated", "\(subscriberPreface)subscriberVideoEnabled", "\(subscriberPreface)subscriberVideoDisabled", "\(subscriberPreface)subscriberVideoDisableWarning", "\(subscriberPreface)subscriberVideoDisableWarningLifted", "\(subscriberPreface)subscriberVideoDataReceived", "\(sessionPreface)archiveStartedWithId", "\(sessionPreface)archiveStoppedWithId", "\(sessionPreface)sessionDidBeginReconnecting", "\(sessionPreface)sessionDidReconnect", "\(sessionPreface)streamPropertyChanged", "\(subscriberPreface)subscriberDidReconnect", "\(subscriberPreface)subscriberCaptionReceived"];
+        return [
+            "\(sessionPreface)streamCreated",
+            "\(sessionPreface)streamDestroyed",
+            "\(sessionPreface)sessionDidConnect",
+            "\(sessionPreface)sessionDidDisconnect",
+            "\(sessionPreface)connectionCreated",
+            "\(sessionPreface)connectionDestroyed",
+            "\(sessionPreface)didFailWithError",
+            "\(sessionPreface)signal",
+            "\(sessionPreface)muteForced",
+            "\(publisherPreface)didFailWithError",
+            "\(publisherPreface)audioLevelUpdated",
+            "\(publisherPreface)rtcStatsReport",
+            "\(publisherPreface)muteForced",
+            "\(publisherPreface)videoEnabled",
+            "\(publisherPreface)videoDisabled",
+            "\(publisherPreface)videoDisableWarning",
+            "\(publisherPreface)videoDisableWarningLifted",
+            "\(subscriberPreface)subscriberDidConnect",
+            "\(subscriberPreface)subscriberDidDisconnect",
+            "\(subscriberPreface)didFailWithError",
+            "\(subscriberPreface)videoNetworkStatsUpdated",
+            "\(subscriberPreface)audioNetworkStatsUpdated",
+            "\(subscriberPreface)audioLevelUpdated",
+            "\(subscriberPreface)rtcStatsReport",
+            "\(subscriberPreface)subscriberVideoEnabled",
+            "\(subscriberPreface)subscriberVideoDisabled",
+            "\(subscriberPreface)subscriberVideoDisableWarning",
+            "\(subscriberPreface)subscriberVideoDisableWarningLifted",
+            "\(subscriberPreface)subscriberVideoDataReceived",
+            "\(sessionPreface)archiveStartedWithId",
+            "\(sessionPreface)archiveStoppedWithId",
+            "\(sessionPreface)sessionDidBeginReconnecting",
+            "\(sessionPreface)sessionDidReconnect",
+            "\(sessionPreface)streamPropertyChanged",
+            "\(subscriberPreface)subscriberDidReconnect",
+            "\(subscriberPreface)subscriberCaptionReceived",
+            "publisherStreamCreated",
+            "publisherStreamDestroyed"
+        ];
     }
-    
+
     static func convertDateToString(_ creationTime: Date) -> String {
         let dateFormatter: DateFormatter = DateFormatter();
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
@@ -139,5 +178,5 @@ class EventUtils {
         errorInfo["message"] = message
         return errorInfo
     }
-    
+
 }

@@ -1,27 +1,33 @@
 export default OTPublisher;
-declare class OTPublisher extends Component<any, any, any> {
+declare class OTPublisher extends React.Component<any, any, any> {
     constructor(props: any, context: any);
     state: {
-        initError: any;
-        publisher: any;
+        initError: null;
+        publisher: null;
         publisherId: any;
     };
     initComponent: () => void;
     componentEvents: {
+        publisherStreamCreated: string;
+        publisherStreamDestroyed: string;
         sessionConnected: string;
-    };
-    componentEventsArray: string[];
-    otrnEventHandler: (event: any) => void;
-    publisherEvents: {};
-    sessionConnected: import("react-native").EmitterSubscription;
+    } | undefined;
+    componentEventsArray: string[] | undefined;
+    otrnEventHandler: ((event: any) => void) | undefined;
+    publisherEvents: {} | undefined;
+    publisherStreamCreated: import("react-native").EmitterSubscription | undefined;
+    publisherStreamDestroyed: import("react-native").EmitterSubscription | undefined;
+    sessionConnected: import("react-native").EmitterSubscription | undefined;
     componentDidMount(): void;
     componentDidUpdate(previousProps: any): void;
     componentWillUnmount(): void;
     sessionConnectedHandler: () => void;
     createPublisher(): void;
-    initPublisher(): void;
+    initPublisher(publisherProperties: any): void;
     publish(): void;
     getRtcStatsReport(): void;
+    publisherStreamCreatedHandler: (stream: any) => void;
+    publisherStreamDestroyedHandler: (stream: any) => void;
     setVideoTransformers(videoTransformers: any): void;
     render(): JSX.Element;
 }
@@ -34,5 +40,5 @@ declare namespace OTPublisher {
     }
     export { OTContext as contextType };
 }
-import { Component } from 'react';
+import React from 'react';
 import OTContext from './contexts/OTContext';

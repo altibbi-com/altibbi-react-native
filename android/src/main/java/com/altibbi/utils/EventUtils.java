@@ -6,10 +6,10 @@ import com.facebook.react.bridge.WritableMap;
 import com.opentok.android.Connection;
 import com.opentok.android.MediaUtils;
 import com.opentok.android.OpentokError;
-import com.opentok.android.PublisherKit;
 import com.opentok.android.Session;
 import com.opentok.android.Stream;
 import com.opentok.android.SubscriberKit;
+import com.opentok.android.PublisherKit;
 
 public final class EventUtils {
 

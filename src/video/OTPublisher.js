@@ -31,6 +31,8 @@ class OTPublisher extends Component {
   }
   initComponent = () => {
     this.componentEvents = {
+      publisherStreamCreated: 'publisherStreamCreated',
+      publisherStreamDestroyed: 'publisherStreamDestroyed:',
       sessionConnected:
         Platform.OS === 'android'
           ? 'session:onConnected'
@@ -44,6 +46,14 @@ class OTPublisher extends Component {
     );
     setNativeEvents(this.publisherEvents);
     OT.setJSComponentEvents(this.componentEventsArray);
+    this.publisherStreamCreated = nativeEvents.addListener(
+      'publisherStreamCreated',
+      stream => this.publisherStreamCreatedHandler(stream)
+    );
+    this.publisherStreamDestroyed = nativeEvents.addListener(
+      'publisherStreamDestroyed',
+      stream => this.publisherStreamDestroyedHandler(stream)
+    );
     if (this.context.sessionId) {
       this.sessionConnected = nativeEvents.addListener(
         `${this.context.sessionId}:${this.componentEvents.sessionConnected}`,
@@ -99,20 +109,22 @@ class OTPublisher extends Component {
     }
   };
   createPublisher() {
+    const publisherProperties = sanitizeProperties(this.props.properties);
     if (Platform.OS === 'android') {
-      checkAndroidPermissions()
+      const { audioTrack, videoTrack, videoSource } = publisherProperties;
+      const isScreenSharing = (videoSource === 'screen');
+      checkAndroidPermissions(audioTrack, videoTrack, isScreenSharing)
         .then(() => {
-          this.initPublisher();
+          this.initPublisher(publisherProperties);
         })
         .catch((error) => {
           this.otrnEventHandler(error);
         });
     } else {
-      this.initPublisher();
+      this.initPublisher(publisherProperties);
     }
   }
-  initPublisher() {
-    const publisherProperties = sanitizeProperties(this.props.properties);
+  initPublisher(publisherProperties) {
     OT.initPublisher(
       this.state.publisherId,
       publisherProperties,
@@ -155,6 +167,26 @@ class OTPublisher extends Component {
   }
   getRtcStatsReport() {
     OT.getRtcStatsReport(this.state.publisherId);
+  }
+
+  publisherStreamCreatedHandler = (stream) => {
+    if (
+      this.props.eventHandlers
+      && this.props.eventHandlers.streamCreated
+      && stream.publisherId === this.state.publisherId
+    ) {
+      this.props.eventHandlers.streamCreated(stream);
+    }
+  }
+
+  publisherStreamDestroyedHandler = (stream) => {
+    if (
+      this.props.eventHandlers
+      && this.props.eventHandlers.streamCreated
+      && stream.publisherId === this.state.publisherId
+    ) {
+      this.props.eventHandlers.streamDestroyed(stream);
+    }
   }
 
   setVideoTransformers(videoTransformers) {
