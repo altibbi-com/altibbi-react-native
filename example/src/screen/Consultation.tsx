@@ -18,6 +18,8 @@ import {
   MediumArray,
   MediumType,
   uploadMedia,
+  getMediaList,
+  deleteMedia,
 } from 'react-native-altibbi';
 import {
   ImageLibraryOptions,
@@ -28,6 +30,8 @@ import { PERMISSIONS, request } from 'react-native-permissions';
 import RNFetchBlob from 'rn-fetch-blob';
 import { Buffer } from 'buffer';
 import { Radio } from '../component/radio';
+import { DownloadDirectoryPath, writeFile } from 'react-native-fs';
+import { json2csv } from 'json-2-csv';
 
 const styles = StyleSheet.create({
   textInput: {
@@ -96,9 +100,12 @@ const Consultation = (props) => {
   const [getConsultationId, setGetConsultationId] = useState<string>('');
   const [getConsultationListId, setGetConsultationListId] =
     useState<string>('');
+  const [getConsultationFollowUpId, setConsultationFollowUpId] =
+    useState<string>('');
   const [prescriptionId, setPrescriptionId] = useState<string>('');
   const [userId, setUserId] = useState<number>();
   const [imageID, setImageID] = useState<string>();
+  const [deleteMediaId, setDeleteMediaId] = useState<string>();
 
   const openImagePicker = () => {
     const options: ImageLibraryOptions = {
@@ -156,6 +163,61 @@ const Consultation = (props) => {
     });
   };
 
+  const getMediaItems = () => {
+    getMediaList(1, 20).then((res) => {
+      console.log(res);
+    });
+  };
+
+  const attachAsCSV = async (jsonData) => {
+    const csvContent = json2csv(jsonData, {
+      excelBOM: true
+    });
+    const fileName = `attach-consultation-${new Date().getTime()}.csv`;
+    const filePath = `${DownloadDirectoryPath}/${fileName}`;
+    await writeFile(filePath, csvContent, 'utf8');
+    try {
+      uploadMedia(
+        `${Platform.OS === 'android' ? 'file://' : ''}` + filePath,
+        'text/csv',
+        fileName
+      ).then((res) => {
+        console.log(res)
+        if (res?.data?.id) {
+          setImageID(res?.data?.id);
+        }
+      });
+    } catch (error) {
+      throw Error(JSON.stringify(error));
+    }
+  };
+  const submitConsultation = (followUpConsultationId: number = 0) => {
+    if (!textBody || textBody.length < 10 || !userId) {
+      console.log('consultation should be longer than 10 characters');
+      return;
+    }
+    if (picked === 'video') {
+      request(
+        Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.CAMERA
+          : PERMISSIONS.ANDROID.CAMERA
+      );
+    }
+    createConsultation({
+      question: textBody,
+      medium: picked,
+      user_id: userId,
+      ...(imageID ? { mediaIds: [imageID] } : {}),
+      ...(followUpConsultationId ? { followUpConsultationId } : {}),
+    })
+      .then((res) => {
+        console.log(res);
+        getCurrentConsultationInfo();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <ScrollView style={{ backgroundColor: '#F3F3F4' }}>
       <View style={{ padding: 20 }}>
@@ -196,34 +258,31 @@ const Consultation = (props) => {
         />
         <TouchableOpacity
           onPress={() => {
-            if (!textBody || textBody.length < 10 || !userId) {
-              return;
-            }
-            if (picked === 'video') {
-              request(
-                Platform.OS === 'ios'
-                  ? PERMISSIONS.IOS.CAMERA
-                  : PERMISSIONS.ANDROID.CAMERA
-              );
-            }
-            createConsultation({
-              question: textBody,
-              medium: picked,
-              user_id: userId,
-              mediaIds: imageID ? [imageID] : [],
-            })
-              .then((res) => {
-                console.log(res);
-                getCurrentConsultationInfo();
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            submitConsultation();
           }}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Create Consultation</Text>
         </TouchableOpacity>
+        <View style={{ flexDirection: 'row' }}>
+          <TextInput
+            keyboardType={'number-pad'}
+            style={styles.input3}
+            placeholder="id"
+            value={getConsultationFollowUpId}
+            onChangeText={(idText: string) => setConsultationFollowUpId(idText)}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              if (getConsultationFollowUpId) {
+                submitConsultation(parseInt(getConsultationFollowUpId, 10));
+              }
+            }}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Followup on Consultation</Text>
+          </TouchableOpacity>
+        </View>
         <View style={{ flexDirection: 'row' }}>
           <TextInput
             keyboardType={'number-pad'}
@@ -298,6 +357,19 @@ const Consultation = (props) => {
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity
+            onPress={() => {
+              attachAsCSV({
+                extraInfo1: { Lable: 'AnyValue', NumberValue: 20 },
+                extraInfo2: 'AnyData',
+              })
+            }}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Attach JSON to consultation</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flexDirection: 'row' }}>
           <TextInput
             keyboardType={'number-pad'}
             style={styles.input3}
@@ -332,6 +404,33 @@ const Consultation = (props) => {
             style={styles.button}
           >
             <Text style={styles.buttonText}>download Prescription</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            getMediaItems();
+          }}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Media List</Text>
+        </TouchableOpacity>
+        <View style={{ flexDirection: 'row' }}>
+          <TextInput
+            keyboardType={'number-pad'}
+            style={styles.input3}
+            placeholder="id"
+            value={deleteMediaId}
+            onChangeText={(mediaId: string) => setDeleteMediaId(mediaId)}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              deleteMedia(deleteMediaId).then((res) => {
+                console.log(res);
+              });
+            }}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Delete Media</Text>
           </TouchableOpacity>
         </View>
       </View>

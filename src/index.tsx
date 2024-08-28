@@ -54,6 +54,8 @@ export {
   cancelConsultation,
   getPrescription,
   rateConsultation,
+  getMediaList,
+  deleteMedia,
 } from './connection';
 
 export { TBIConstants, init } from './service';
