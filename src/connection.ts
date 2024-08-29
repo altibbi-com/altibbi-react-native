@@ -2,7 +2,11 @@ import { TBIConstants } from './service';
 import type {
   ConsultationType,
   MediaType,
+  PredictSpecialty,
+  PredictSummary,
   ResponseType,
+  Soap,
+  Transcription,
   UserType,
 } from './types';
 
@@ -379,7 +383,60 @@ export const rateConsultation = async (
     data: { score },
     endPoint: `consultations/${consultation_id}/rate`,
   });
-  if (response.status === 204) {
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+export const getPredictSummary = async (
+  consultation_id: number
+): Promise<ResponseType<PredictSummary>> => {
+  const response: ResponseType<PredictSummary> = await request({
+    method: Methods.get,
+    data: {},
+    endPoint: `consultations/${consultation_id}/predict-summary`,
+  });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+
+export const getSoapSummary = async (
+  consultation_id: number
+): Promise<ResponseType<Soap>> => {
+  const response: ResponseType<Soap> = await request({
+    method: Methods.get,
+    data: {},
+    endPoint: `consultations/${consultation_id}/soap-summary`,
+  });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+export const getTranscription = async (
+  consultation_id: number
+): Promise<ResponseType<Transcription>> => {
+  const response: ResponseType<Transcription> = await request({
+    method: Methods.get,
+    data: {},
+    endPoint: `consultations/${consultation_id}/transcription`,
+  });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+export const getPredictSpecialty = async (
+  consultation_id: number
+): Promise<ResponseType<PredictSpecialty[]>> => {
+  const response: ResponseType<PredictSpecialty[]> = await request({
+    method: Methods.get,
+    data: {},
+    endPoint: `consultations/${consultation_id}/predict-specialty`,
+  });
+  if (response.status === 200) {
     return response;
   }
   throw Error(JSON.stringify(response));
