@@ -30,6 +30,7 @@ import { PERMISSIONS, request } from 'react-native-permissions';
 import RNFetchBlob from 'rn-fetch-blob';
 import { Buffer } from 'buffer';
 import { Radio } from '../component/radio';
+import { getPredictSpecialty, getPredictSummary, getSoapSummary, getTranscription } from '../../../src/connection';
 import { DownloadDirectoryPath, writeFile } from 'react-native-fs';
 import { json2csv } from 'json-2-csv';
 
@@ -356,6 +357,17 @@ const Consultation = (props) => {
             <Text style={styles.buttonText}>Get Consultation by id</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            getPredictSummary(148).then(res=> console.log(res.data.summary));
+            getTranscription(146).then(res=> console.log(res.data.transcript));
+            getSoapSummary(147).then(res=> console.log(res.data.summary));
+            getPredictSpecialty(149).then(res=> console.log(res.data[0]));
+          }}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Get Ai Support</Text>
+        </TouchableOpacity>
         <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity
             onPress={() => {

@@ -80,8 +80,8 @@ interface VoipConfig {
   api_key?: string;
   call_id?: string;
   token?: string;
-  created_at?: string
-  updated_at?: string
+  created_at?: string;
+  updated_at?: string;
 }
 interface Recommendation {
   id?: number;
@@ -175,6 +175,37 @@ interface ConsultationType {
   socketParams?: SocketParams;
   doctor_average_rating?: number;
 }
+interface Transcription {
+  transcript: string;
+}
+interface PredictSpecialty {
+  specialty_id: number;
+}
+interface PredictSummary {
+  summary: string;
+}
+interface Soap {
+  summary: {
+    subjective: {
+      symptoms?: string;
+      concerns?: string;
+    };
+    objective: {
+      laboratory_results?: string;
+      physical_examination_findings?: string;
+    };
+    assessment: {
+      diagnosis?: string;
+      differential_diagnosis?: string;
+    };
+    plan: {
+      non_pharmacological_intervention?: string;
+      medications?: string;
+      referrals?: string;
+      follow_up_instructions?: string;
+    };
+  };
+}
 export type {
   ResponseType,
   MediumType,
@@ -202,4 +233,8 @@ export type {
   RecommendationDoctorReferral,
   RecommendationPostCallAnswer,
   ConsultationType,
+  Transcription,
+  PredictSpecialty,
+  PredictSummary,
+  Soap,
 };
