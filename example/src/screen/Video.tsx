@@ -42,19 +42,13 @@ const Video = (props) => {
 
   return (
     <TBISession
-      options={{
-        androidZOrder: 'onTop',
-        androidOnTop: 'publisher',
+      eventHandlers={{
+        sessionDisconnected: () =>
+          console.log("Consultation Error now check medium from getLastConsultation"),
       }}
-      ref={(ref) => (sessionRef.current = ref)}
       apiKey={data.api_key}
       sessionId={data.call_id}
       token={data.token}
-      eventHandlers={{
-        streamDestroyed: (event) => {},
-        error: (event) => {},
-        otrnError: (event) => {},
-      }}
     >
       <TBISubscriber
         eventHandlers={{
@@ -80,9 +74,18 @@ const Video = (props) => {
           enableDtx: true,
         }}
         eventHandlers={{
-          streamDestroyed: (event) => {},
-          error: (event) => {},
-          otrnError: (event) => {},
+          streamDestroyed: (event) => {
+            console.log("eventHandlers streamDestroyed 1",event)
+          },
+          error: (event) => {
+            console.log("eventHandlers error 1",event)
+          },
+          otrnError: (event) => {
+            console.log("eventHandlers otrnError 1",event)
+          },
+          onError: (event) => {
+            console.log("eventHandlers onError 1", event)
+          }
         }}
       />
       <View

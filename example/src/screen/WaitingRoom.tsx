@@ -138,7 +138,7 @@ const WaitingRoom = (props) => {
 
       <Text
         onPress={() => {
-          cancelConsultation(consultationId).then(() => {
+          cancelConsultation(consultationId).then((res) => {
             props.navigation.goBack();
           });
         }}

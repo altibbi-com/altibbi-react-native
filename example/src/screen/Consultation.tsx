@@ -210,6 +210,7 @@ const Consultation = (props) => {
       user_id: userId,
       ...(imageID ? { mediaIds: [imageID] } : {}),
       ...(followUpConsultationId ? { followUpConsultationId } : {}),
+      forceWhiteLabelingPartnerName: 'partnerTest',
     })
       .then((res) => {
         console.log(res);

@@ -1,5 +1,6 @@
 import { TBIConstants } from './service';
 import type {
+  Article,
   ConsultationType,
   MediaType,
   PredictSpecialty,
@@ -22,7 +23,8 @@ interface ConsultationObject {
   medium: string;
   user_id: number;
   mediaIds?: string[];
-  parent_consultation_id?: number;
+  parent_consultation_id?: number | null;
+  forceWhiteLabelingPartnerName?: string | null;
 }
 
 interface RequestParamsInterface {
@@ -85,7 +87,9 @@ export const request = async ({
     'accept-language': TBIConstants.language,
   };
 
-  let url = `${TBIConstants.baseURL}/v1/${endPoint}`;
+  let url = endPoint.includes('rest-api')
+    ? endPoint
+    : `${TBIConstants.baseURL}/v1/${endPoint}`;
   let body;
   if (method === Methods.get) {
     url = url + '?' + new URLSearchParams(data).toString();
@@ -201,13 +205,13 @@ export const createConsultation = async ({
   medium,
   user_id,
   mediaIds,
-  parent_consultation_id,
+  parent_consultation_id = null,
+  forceWhiteLabelingPartnerName = null,
 }: ConsultationObject): Promise<ResponseType<ConsultationType>> => {
   if (!question || !medium || !user_id) {
     throw Error('missing field');
   }
-
-  const data = {
+  let data = {
     question,
     medium,
     user_id,
@@ -217,6 +221,12 @@ export const createConsultation = async ({
       'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
     parent_consultation_id,
   };
+  if (
+    forceWhiteLabelingPartnerName &&
+    forceWhiteLabelingPartnerName?.length > 3
+  ) {
+    data.question = `${data.question} ~${forceWhiteLabelingPartnerName}~`;
+  }
   const response: ResponseType<ConsultationType> = await request({
     method: Methods.post,
     data,
@@ -468,6 +478,23 @@ export const deleteMedia = async (
     method: Methods.delete,
     data: {},
     endPoint: `media/${mediaId}`,
+  });
+  if (response.status === 204) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+
+export const getArticlesList = async (
+  subcategoryIds: string[]
+): Promise<ResponseType<Article[]>> => {
+  const response: ResponseType<Article[]> = await request({
+    method: Methods.get,
+    data: {
+      'filter[sub_category_id][in]': subcategoryIds.join(','),
+      'sort': '-article_id',
+    },
+    endPoint: `https://rest-api.altibbi.com/active/v1/articles`,
   });
   if (response.status === 204) {
     return response;

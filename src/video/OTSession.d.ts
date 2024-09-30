@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 declare class OTSession extends React.Component<any, any, any> {
     constructor(props: any);
     state: {
@@ -22,30 +24,26 @@ declare class OTSession extends React.Component<any, any, any> {
     render(): JSX.Element;
 }
 declare namespace OTSession {
-    namespace propTypes {
-        let apiKey: PropTypes.Validator<string>;
-        let sessionId: PropTypes.Validator<string>;
-        let token: PropTypes.Validator<string>;
-        let children: PropTypes.Requireable<NonNullable<PropTypes.ReactElementLike | (PropTypes.ReactElementLike | null | undefined)[] | null | undefined>>;
-        let style: any;
-        let eventHandlers: PropTypes.Requireable<object>;
-        let options: PropTypes.Requireable<object>;
-        let signal: PropTypes.Requireable<object>;
-        let encryptionSecret: PropTypes.Requireable<string>;
-    }
-    namespace defaultProps {
-        let eventHandlers_1: {};
-        export { eventHandlers_1 as eventHandlers };
-        let options_1: {};
-        export { options_1 as options };
-        let signal_1: {};
-        export { signal_1 as signal };
-        export namespace style_1 {
-            let flex: number;
-        }
-        export { style_1 as style };
-    }
+  namespace propTypes {
+    let apiKey: PropTypes.Validator<string>;
+    let sessionId: PropTypes.Validator<string>;
+    let token: PropTypes.Validator<string>;
+    let children: PropTypes.Requireable<NonNullable<PropTypes.ReactElementLike | (PropTypes.ReactElementLike | null | undefined)[] | null | undefined>>;
+    let style: any;
+    let eventHandlers: PropTypes.Requireable<object>;
+    let options: PropTypes.Requireable<object>;
+    let signal: PropTypes.Requireable<object>;
+    let encryptionSecret: PropTypes.Requireable<string>;
+  }
+
+  namespace defaultProps {
+    // Declare the types (no initialization)
+    let eventHandlers: object;
+    let options: object;
+    let signal: object;
+    let style: {
+      flex: number;
+    };
+  }
 }
 export default OTSession;
-import React from 'react';
-import PropTypes from 'prop-types';

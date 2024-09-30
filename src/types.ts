@@ -178,8 +178,15 @@ interface ConsultationType {
 interface Transcription {
   transcript: string;
 }
+interface SubCategory {
+  sub_category_id: number;
+  name_en: string;
+  name_ar: string;
+}
+
 interface PredictSpecialty {
   specialty_id: number;
+  subCategories: SubCategory[];
 }
 interface PredictSummary {
   summary: string;
@@ -205,6 +212,23 @@ interface Soap {
       follow_up_instructions?: string;
     };
   };
+}
+interface Article {
+  article_id: number;
+  slug: string;
+  sub_category_id: number;
+  title: string;
+  body: string;
+  article_references: string;
+  activation_date: string;
+  publish_status: string;
+  adult_content: boolean;
+  featured: boolean;
+  date_added: string;
+  date_modified: string;
+  body_clean: string;
+  image_url: string;
+  url: string;
 }
 export type {
   ResponseType,
@@ -237,4 +261,5 @@ export type {
   PredictSpecialty,
   PredictSummary,
   Soap,
+  Article,
 };
