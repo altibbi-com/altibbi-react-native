@@ -7,6 +7,7 @@ import Chat from '../screen/Chat';
 import WaitingRoom from '../screen/WaitingRoom';
 import Video from '../screen/Video';
 import Consultation from '../screen/Consultation';
+import AskSina from '../screen/AskSina';
 
 const Navigation = (props) => {
   const Stack = createNativeStackNavigator();
@@ -19,6 +20,7 @@ const Navigation = (props) => {
         <Stack.Screen name={'ChatRoom'} component={Chat} />
         <Stack.Screen name={'Video'} component={Video} />
         <Stack.Screen name={'WaitingRoom'} component={WaitingRoom} />
+        <Stack.Screen name={'AskSina'} component={AskSina} />
       </Stack.Navigator>
     </NavigationContainer>
   );

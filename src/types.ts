@@ -263,3 +263,84 @@ export type {
   Soap,
   Article,
 };
+
+export interface ChatType {
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface MessageData {
+  contentType: string;
+  foundInRag: boolean;
+  links: any[];
+}
+
+export interface ChatMessage {
+  id: number;
+  sender: string;
+  text: string;
+  chatId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  media: any;
+  data?: MessageData;
+}
+
+export interface ChatResponse {
+  userMessage: ChatMessage;
+  sinaMessage: ChatMessage;
+}
+
+export function parseChatMessage(json: any): ChatMessage {
+  return {
+    id: json.id,
+    sender: json.sender,
+    text: json.text,
+    chatId: json.chat_id,
+    createdAt: new Date(json.created_at),
+    updatedAt: new Date(json.updated_at),
+    media: json.media,
+    data: json.data
+      ? {
+          contentType: json.data.content_type,
+          foundInRag: json.data.found_in_rag,
+          links: json.data.links,
+        }
+      : undefined,
+  };
+}
+
+export function parseChatResponse(json: any): ChatResponse {
+  return {
+    userMessage: parseChatMessage(json.user_message),
+    sinaMessage: parseChatMessage(json.sina_message),
+  };
+}
+
+export function serializeChatMessage(msg: ChatMessage): any {
+  const base: any = {
+    id: msg.id,
+    sender: msg.sender,
+    text: msg.text,
+    chat_id: msg.chatId,
+    created_at: msg.createdAt.toISOString(),
+    updated_at: msg.updatedAt.toISOString(),
+    media: msg.media,
+  };
+  if (msg.data) {
+    base.data = {
+      content_type: msg.data.contentType,
+      found_in_rag: msg.data.foundInRag,
+      links: msg.data.links,
+    };
+  }
+  return base;
+}
+
+export function serializeChatResponse(resp: ChatResponse): any {
+  return {
+    user_message: serializeChatMessage(resp.userMessage),
+    sina_message: serializeChatMessage(resp.sinaMessage),
+  };
+}

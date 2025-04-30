@@ -118,6 +118,10 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+  configurations.all {
+    exclude group: "com.google.errorprone", module: "error_prone_annotations"
+  }
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

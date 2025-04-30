@@ -9,6 +9,9 @@ import type {
   Soap,
   Transcription,
   UserType,
+  ChatType,
+  ChatResponse,
+  ChatMessage,
 } from './types';
 
 interface MethodsObject {
@@ -35,6 +38,7 @@ interface RequestParamsInterface {
   type?: string;
   fileName?: string;
   download?: boolean;
+  isSinaAPI?: boolean;
 }
 
 interface RequestInterface {
@@ -74,8 +78,12 @@ export const request = async ({
   type,
   fileName,
   download,
+  isSinaAPI,
 }: RequestParamsInterface) => {
-  if (!TBIConstants.baseURL) {
+  if (
+    !TBIConstants.baseURL ||
+    (isSinaAPI && !(TBIConstants.sinaModelEndPoint?.length > 0))
+  ) {
     return {
       message: 'Add your baseURL to Init',
     };
@@ -83,14 +91,23 @@ export const request = async ({
 
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${TBIConstants.token}`,
+    'Authorization': `Bearer ${isSinaAPI ? '' : TBIConstants.token}`,
     'accept-language': TBIConstants.language,
   };
 
   let url = endPoint.includes('rest-api')
     ? endPoint
+    : isSinaAPI
+    ? `${TBIConstants.sinaModelEndPoint}/${endPoint}`
     : `${TBIConstants.baseURL}/v1/${endPoint}`;
   let body;
+  if (isSinaAPI) {
+    if (!data) {
+      data = {};
+    }
+    data.partner = TBIConstants.baseURL;
+    data.partnerUser = TBIConstants.token;
+  }
   if (method === Methods.get) {
     url = url + '?' + new URLSearchParams(data).toString();
   } else if (path) {
@@ -497,6 +514,58 @@ export const getArticlesList = async (
     endPoint: `https://rest-api.altibbi.com/active/v1/articles`,
   });
   if (response.status === 204) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+
+export const createChat = async (): Promise<ResponseType<ChatType>> => {
+  const response: ResponseType<ChatType> = await request({
+    method: Methods.post,
+    endPoint: `chats`,
+    isSinaAPI: true,
+  });
+  if (response.status === 201) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+
+export const sendSinaMessage = async (
+  text: String,
+  sessionId: String
+): Promise<ResponseType<ChatResponse>> => {
+  const response: ResponseType<ChatResponse> = await request({
+    method: Methods.post,
+    endPoint: `chats/${sessionId}/messages`,
+    isSinaAPI: true,
+    data: {
+      text,
+    },
+  });
+  if (response.status === 201) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+
+export const getSinaChatMessages = async (
+  sessionId: string,
+  page: number = 1,
+  perPage = 20
+): Promise<ResponseType<ChatMessage[]>> => {
+  const response = await request({
+    isSinaAPI: true,
+    method: Methods.get,
+    data: {
+      sessionId,
+      page,
+      'sort': '-id',
+      'per-page': perPage,
+    },
+    endPoint: `chats/${sessionId}/messages`,
+  });
+  if (response.status === 200) {
     return response;
   }
   throw Error(JSON.stringify(response));

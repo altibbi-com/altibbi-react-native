@@ -37,7 +37,7 @@ const styles = StyleSheet.create<Style>({
 
 const Home = () => {
   useEffect(() => {
-    init('', '', 'ar');
+    init('', '', 'ar', '');
   }, []);
   const navigation = useNavigation();
 
@@ -55,6 +55,13 @@ const Home = () => {
         style={styles.button}
       >
         <Text style={styles.buttonText}>consultation Page</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigate('AskSina')}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Sina Page</Text>
       </TouchableOpacity>
     </View>
   );

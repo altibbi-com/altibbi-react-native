@@ -56,6 +56,9 @@ export {
   rateConsultation,
   getMediaList,
   deleteMedia,
+  createChat,
+  sendSinaMessage,
+  getSinaChatMessages,
 } from './connection';
 
 export { TBIConstants, init } from './service';
@@ -94,6 +97,9 @@ export type {
   RecommendationDoctorReferral,
   RecommendationPostCallAnswer,
   ConsultationType,
+  ChatType,
+  ChatResponse,
+  ChatMessage,
 } from './types';
 export {
   materialStatusArray,
