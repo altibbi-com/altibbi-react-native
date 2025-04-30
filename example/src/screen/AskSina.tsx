@@ -10,8 +10,8 @@ import {
 
 import {
   sendSinaMessage,
-  createChat,
-  getSinaChatMessages
+  createSinaSession,
+  getSinaChatMessages,
 } from 'react-native-altibbi';
 
 const styles = StyleSheet.create({
@@ -97,7 +97,7 @@ const AskSina = () => {
       <View style={{ padding: 20 }}>
         <TouchableOpacity
           onPress={() => {
-            createChat().then((res) => {
+            createSinaSession().then((res) => {
               console.log('create chat', res.data);
               if (res.data.id) {
                 console.log('create setSessionId', res.data.id);
@@ -107,7 +107,7 @@ const AskSina = () => {
           }}
           style={styles.button}
         >
-          <Text style={styles.buttonText}>Create Chat</Text>
+          <Text style={styles.buttonText}>Create Sina Session</Text>
         </TouchableOpacity>
 
         <TextInput

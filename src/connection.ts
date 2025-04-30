@@ -519,7 +519,7 @@ export const getArticlesList = async (
   throw Error(JSON.stringify(response));
 };
 
-export const createChat = async (): Promise<ResponseType<ChatType>> => {
+export const createSinaSession = async (): Promise<ResponseType<ChatType>> => {
   const response: ResponseType<ChatType> = await request({
     method: Methods.post,
     endPoint: `chats`,

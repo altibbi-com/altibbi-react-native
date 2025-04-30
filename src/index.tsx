@@ -56,7 +56,7 @@ export {
   rateConsultation,
   getMediaList,
   deleteMedia,
-  createChat,
+  createSinaSession,
   sendSinaMessage,
   getSinaChatMessages,
 } from './connection';
