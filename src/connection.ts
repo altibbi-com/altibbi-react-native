@@ -93,6 +93,12 @@ export const request = async ({
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${isSinaAPI ? '' : TBIConstants.token}`,
     'accept-language': TBIConstants.language,
+    ...(isSinaAPI
+      ? {
+          'partner-host': TBIConstants.baseURL,
+          'partner-user-token': TBIConstants.token,
+        }
+      : {}),
   };
 
   let url = endPoint.includes('rest-api')
@@ -101,10 +107,6 @@ export const request = async ({
     ? `${TBIConstants.sinaModelEndPoint}/${endPoint}`
     : `${TBIConstants.baseURL}/v1/${endPoint}`;
   let body;
-  if (isSinaAPI) {
-    headers.partner = TBIConstants.baseURL;
-    headers.partnerUser = TBIConstants.token;
-  }
   if (method === Methods.get) {
     url = url + '?' + new URLSearchParams(data).toString();
   } else if (path) {
