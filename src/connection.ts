@@ -102,11 +102,8 @@ export const request = async ({
     : `${TBIConstants.baseURL}/v1/${endPoint}`;
   let body;
   if (isSinaAPI) {
-    if (!data) {
-      data = {};
-    }
-    data.partner = TBIConstants.baseURL;
-    data.partnerUser = TBIConstants.token;
+    headers.partner = TBIConstants.baseURL;
+    headers.partnerUser = TBIConstants.token;
   }
   if (method === Methods.get) {
     url = url + '?' + new URLSearchParams(data).toString();
