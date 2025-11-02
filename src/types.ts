@@ -157,6 +157,7 @@ interface ConsultationType {
   status?: string;
   is_fulfilled?: number;
   parent_consultation_id?: number;
+  consultation_category_id?: number;
   created_at?: string;
   updated_at?: string;
   closed_at?: string;

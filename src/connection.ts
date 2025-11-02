@@ -28,6 +28,7 @@ interface ConsultationObject {
   mediaIds?: string[];
   parent_consultation_id?: number | null;
   forceWhiteLabelingPartnerName?: string | null;
+  consultation_category_id?: number | null;
 }
 
 interface RequestParamsInterface {
@@ -223,6 +224,7 @@ export const createConsultation = async ({
   mediaIds,
   parent_consultation_id = null,
   forceWhiteLabelingPartnerName = null,
+  consultation_category_id = null,
 }: ConsultationObject): Promise<ResponseType<ConsultationType>> => {
   if (!question || !medium || !user_id) {
     throw Error('missing field');
@@ -236,6 +238,7 @@ export const createConsultation = async ({
       'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
       'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
     parent_consultation_id,
+    consultation_category_id,
   };
   if (
     forceWhiteLabelingPartnerName &&
