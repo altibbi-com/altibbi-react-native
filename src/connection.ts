@@ -90,18 +90,17 @@ export const request = async ({
     };
   }
 
-  const headers = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${isSinaAPI ? '' : TBIConstants.token}`,
     'accept-language': TBIConstants.language,
-    ...(isSinaAPI
-      ? {
-          'partner-host': TBIConstants.baseURL,
-          'partner-user-token': TBIConstants.token,
-        }
-      : {}),
   };
 
+  if (isSinaAPI && TBIConstants.baseURL && TBIConstants.token) {
+    headers['partner-host'] = TBIConstants.baseURL;
+    headers['partner-user-token'] = TBIConstants.token;
+  } else if (TBIConstants.token) {
+    headers['Authorization'] = `Bearer ${TBIConstants.token}`;
+  }
   let url = endPoint.includes('rest-api')
     ? endPoint
     : isSinaAPI
@@ -535,7 +534,8 @@ export const createSinaSession = async (): Promise<ResponseType<ChatType>> => {
 
 export const sendSinaMessage = async (
   text: String,
-  sessionId: String
+  sessionId: String,
+  mediaId: String | null = null
 ): Promise<ResponseType<ChatResponse>> => {
   const response: ResponseType<ChatResponse> = await request({
     method: Methods.post,
@@ -543,6 +543,7 @@ export const sendSinaMessage = async (
     isSinaAPI: true,
     data: {
       text,
+      ...(mediaId ? { media_id: mediaId } : {}),
     },
   });
   if (response.status === 201) {
@@ -566,6 +567,26 @@ export const getSinaChatMessages = async (
       'per-page': perPage,
     },
     endPoint: `chats/${sessionId}/messages`,
+  });
+  if (response.status === 200) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+
+export const uploadSinaMedia = async (
+  path: string,
+  type: string,
+  fileName: string
+): Promise<ResponseType<MediaType>> => {
+  const response: ResponseType<MediaType> = await request({
+    isSinaAPI: true,
+    method: Methods.post,
+    endPoint: `media`,
+    data: {},
+    path,
+    type,
+    fileName,
   });
   if (response.status === 200) {
     return response;
