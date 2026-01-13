@@ -196,7 +196,7 @@ export const updateUser = async (
     data: user,
     endPoint: `users/${user_id}`,
   });
-  if (response.status === 201) {
+  if (response.status === 200 || response.status === 201) {
     return response;
   }
   throw Error(JSON.stringify(response));
@@ -526,7 +526,7 @@ export const createSinaSession = async (): Promise<ResponseType<ChatType>> => {
     endPoint: `chats`,
     isSinaAPI: true,
   });
-  if (response.status === 201) {
+  if (response.status === 200 || response.status === 201) {
     return response;
   }
   throw Error(JSON.stringify(response));
@@ -546,7 +546,7 @@ export const sendSinaMessage = async (
       ...(mediaId ? { media_id: mediaId } : {}),
     },
   });
-  if (response.status === 201) {
+  if (response.status === 200 || response.status === 201) {
     return response;
   }
   throw Error(JSON.stringify(response));

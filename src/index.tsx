@@ -100,6 +100,7 @@ export type {
   ChatType,
   ChatResponse,
   ChatMessage,
+  RelationType,
 } from './types';
 export {
   materialStatusArray,
