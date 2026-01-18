@@ -1,9 +1,21 @@
 {
   "source": "src",
   "output": "lib",
+  "exclude": [
+    "*.d.ts",
+    "**/*.d.ts",
+    "video/**/*.d.ts",
+    "contexts/**/*.d.ts",
+    "helpers/**/*.d.ts",
+    "views/**/*.d.ts"
+  ],
   "targets": [
-    ["commonjs", { "babelrc": true }],
-    ["module", { "babelrc": true }],
+    ["commonjs", { 
+      "babelrc": true
+    }],
+    ["module", { 
+      "babelrc": true
+    }],
     "typescript"
   ]
 }
