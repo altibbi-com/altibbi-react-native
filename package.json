@@ -1,6 +1,6 @@
 {
   "name": "react-native-altibbi",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "React native SDK provides integration for the Altibbi services, including video consultation, text consultation, push Welcome to the React Native SDK for Altibbi services, your comprehensive solution for integrating health consultation services into your React Native applications. This SDK enables video and text consultations, push notifications, and many other features to provide a seamless healthcare experience. project.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -23,15 +23,15 @@
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
-    "!**/.*"
+    "!**/.*",
+    "!example"
   ],
   "scripts": {
-    "example": "yarn workspace react-native-altibbi-example",
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli lib",
-    "prepublishOnly": "node -e \"const {execSync}=require('child_process'),path=require('path'),fs=require('fs');const bob=path.join('node_modules','.bin','bob');if(fs.existsSync(bob)){execSync('bob build',{stdio:'inherit'});}else{throw new Error('react-native-builder-bob not found. Run npm install first.');}\"",
+    "prepublishOnly": "bob build",
     "release": "release-it"
   },
   "keywords": [
@@ -90,9 +90,6 @@
     "react": "*",
     "react-native": "*"
   },
-  "workspaces": [
-    "example"
-  ],
   "packageManager": "yarn@3.6.1",
   "engines": {
     "node": ">= 16.0.0"
@@ -168,9 +165,6 @@
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
-    "exclude": [
-      "**/*.d.ts"
-    ],
     "targets": [
       "commonjs",
       "module",
