@@ -15,10 +15,10 @@ import { AppCard } from '../component/appCard';
 const Home = () => {
   useEffect(() => {
     const USER_JWT =
-      'shtayyat-test'
-    const BASE_URL = 'https://insurance.altibb.com';
+      ''
+    const BASE_URL = '';
 
-    init(USER_JWT, BASE_URL, 'ar', 'https://stg.asksina.ai/partners');
+    init(USER_JWT, BASE_URL, 'ar', '');
   }, []);
   const navigation = useNavigation();
 
