@@ -10,10 +10,10 @@
     "views/**/*.d.ts"
   ],
   "targets": [
-    ["commonjs", { 
+    ["commonjs", {
       "babelrc": true
     }],
-    ["module", { 
+    ["module", {
       "babelrc": true
     }],
     "typescript"
