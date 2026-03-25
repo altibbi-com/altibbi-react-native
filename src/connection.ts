@@ -1,6 +1,7 @@
 import { TBIConstants } from './service';
 import type {
   Article,
+  ConsultationAvailableShifts,
   ConsultationType,
   MediaType,
   PredictSpecialty,
@@ -26,7 +27,8 @@ interface ConsultationObject {
   medium: string;
   user_id: number;
   mediaIds?: string[];
-  parent_consultation_id?: number | null;
+  parent_consultation_id?: number | string | null;
+  scheduled_to?: string | null;
   forceWhiteLabelingPartnerName?: string | null;
   consultation_category_id?: number | null;
 }
@@ -216,32 +218,51 @@ export const deleteUser = async (
   throw Error(JSON.stringify(response));
 };
 
+const consultationExpand =
+  'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
+  'chatConfig,chatHistory,voipConfig,videoConfig,recommendation';
+
+function formatLocalYmd(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 export const createConsultation = async ({
   question,
   medium,
   user_id,
   mediaIds,
   parent_consultation_id = null,
+  scheduled_to = null,
   forceWhiteLabelingPartnerName = null,
   consultation_category_id = null,
 }: ConsultationObject): Promise<ResponseType<ConsultationType>> => {
   if (!question || !medium || !user_id) {
     throw Error('missing field');
   }
-  let data = {
+  const data: Record<string, unknown> = {
     question,
     medium,
     user_id,
-    media_ids: mediaIds,
-    expand:
-      'pusherAppKey,parentConsultation,consultations,user,media,pusherChannel,' +
-      'chatConfig,chatHistory,voipConfig,videoConfig,recommendation',
-    parent_consultation_id,
-    consultation_category_id,
+    expand: consultationExpand,
   };
+  if (mediaIds?.length) {
+    data.media_ids = mediaIds;
+  }
+  if (parent_consultation_id != null && parent_consultation_id !== '') {
+    data.parent_consultation_id = parent_consultation_id;
+  }
+  if (scheduled_to != null && scheduled_to !== '') {
+    data.scheduled_to = scheduled_to;
+  }
+  if (consultation_category_id != null) {
+    data.consultation_category_id = consultation_category_id;
+  }
   if (
     forceWhiteLabelingPartnerName &&
-    forceWhiteLabelingPartnerName?.length > 3
+    forceWhiteLabelingPartnerName.length > 3
   ) {
     data.question = `${data.question} ~${forceWhiteLabelingPartnerName}~`;
   }
@@ -252,6 +273,23 @@ export const createConsultation = async ({
   });
 
   if (response.status === 201) {
+    return response;
+  }
+  throw Error(JSON.stringify(response));
+};
+
+/** GET /v1/consultations/{id}/available-shifts?date=yyyy-MM-dd — `date` defaults to today when empty. */
+export const getConsultationAvailableShifts = async (
+  consultationId: string,
+  date: string
+): Promise<ResponseType<ConsultationAvailableShifts>> => {
+  const dateParam = date?.trim() ? date.trim() : formatLocalYmd(new Date());
+  const response: ResponseType<ConsultationAvailableShifts> = await request({
+    method: Methods.get,
+    data: { date: dateParam },
+    endPoint: `consultations/${consultationId}/available-shifts`,
+  });
+  if (response.status === 200) {
     return response;
   }
   throw Error(JSON.stringify(response));

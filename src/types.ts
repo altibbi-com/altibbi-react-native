@@ -157,6 +157,7 @@ interface ConsultationType {
   status?: string;
   is_fulfilled?: number;
   parent_consultation_id?: number;
+  scheduled_to?: string;
   consultation_category_id?: number;
   created_at?: string;
   updated_at?: string;
@@ -176,6 +177,36 @@ interface ConsultationType {
   socketParams?: SocketParams;
   doctor_average_rating?: number;
 }
+
+/** Single slot from GET /v1/consultations/{id}/available-shifts */
+export interface ConsultationAvailableShift {
+  day?: string | null;
+  from?: number | null;
+  to?: number | null;
+  booked?: boolean | null;
+  full_date?: string | null;
+}
+
+export interface ConsultationAvailableShifts {
+  shifts: ConsultationAvailableShift[];
+}
+
+/** Use as `scheduled_to` when creating a scheduled follow-up (matches Kotlin `shiftValue()`). */
+export function shiftValue(shift: ConsultationAvailableShift): string | undefined {
+  const v = shift.full_date;
+  if (v == null || v === '') return undefined;
+  return v;
+}
+
+/** Human-readable label e.g. "Monday 9 -> 10" (matches Kotlin `displayText()`). */
+export function displayText(shift: ConsultationAvailableShift): string {
+  const dayPrefix = shift.day ? `${shift.day} ` : '';
+  if (shift.from != null && shift.to != null) {
+    return `${dayPrefix}${shift.from} -> ${shift.to}`;
+  }
+  return dayPrefix.trim();
+}
+
 interface Transcription {
   transcript: string;
 }

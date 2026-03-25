@@ -15,10 +15,12 @@ import {
 import {
   createConsultation,
   getLastConsultation,
+  getConsultationAvailableShifts,
   MediumArray,
   MediumType,
   uploadMedia,
   getMediaList,
+  shiftValue,
 } from 'react-native-altibbi';
 import {
   ImageLibraryOptions,
@@ -218,6 +220,9 @@ const Consultation = (props: any) => {
   const [getConsultationId, setGetConsultationId] = useState<string>('');
   const [getConsultationFollowUpId, setConsultationFollowUpId] =
     useState<string>('');
+  const [scheduledFollowUpDate, setScheduledFollowUpDate] = useState<string>(
+    ''
+  );
   const [followUpError, setFollowUpError] = useState<string>('');
   const [viewImageModalVisible, setViewImageModalVisible] = useState(false);
 
@@ -230,6 +235,7 @@ const Consultation = (props: any) => {
       setPreviewUri(null);
       setGetConsultationId('');
       setConsultationFollowUpId('');
+      setScheduledFollowUpDate('');
       setFollowUpError('');
       setCreateStatus(null);
       setQuickActionStatus(null);
@@ -397,6 +403,84 @@ const Consultation = (props: any) => {
       });
   };
 
+  const submitScheduledFollowUp = async () => {
+    // Scheduled follow-up flow:
+    // 1) Fetch available shifts for the parent consultation
+    // 2) Pick the first available (booked == false)
+    // 3) Create the follow-up consultation with `scheduled_to = full_date`
+    try {
+      if (!getConsultationFollowUpId) {
+        setFollowUpError('Required');
+        return;
+      }
+      if (!followUpUserId) {
+        setQuickActionStatus({
+          text: 'User ID missing.',
+          type: 'error',
+        });
+        return;
+      }
+      if (!followUpQuestion || followUpQuestion.length < 10) {
+        setQuickActionStatus({
+          text: 'Question too short.',
+          type: 'error',
+        });
+        return;
+      }
+
+      setIsFollowingUp(true);
+
+      const response = await getConsultationAvailableShifts(
+        getConsultationFollowUpId,
+        scheduledFollowUpDate
+      );
+      const shifts = response?.data?.shifts || [];
+      const shift =
+        shifts.find((s: any) => s?.booked === false) ||
+        shifts.find((s: any) => s?.booked == null);
+
+      if (!shift) {
+        setQuickActionStatus({
+          text: 'No available shifts found.',
+          type: 'error',
+        });
+        return;
+      }
+
+      const scheduledTo = shiftValue(shift);
+      if (!scheduledTo) {
+        setQuickActionStatus({
+          text: 'Invalid shift full_date.',
+          type: 'error',
+        });
+        return;
+      }
+
+      await createConsultation({
+        question: followUpQuestion,
+        medium: picked,
+        user_id: followUpUserId,
+        ...(imageID ? { mediaIds: [imageID] } : {}),
+        parent_consultation_id: getConsultationFollowUpId,
+        scheduled_to: scheduledTo,
+        forceWhiteLabelingPartnerName: 'partnerTest',
+      });
+
+      setQuickActionStatus({
+        text: 'Scheduled follow-up created.',
+        type: 'success',
+      });
+      getCurrentConsultationInfo();
+    } catch (error: any) {
+      setQuickActionStatus({
+        text: error?.data?.message || 'Failed to schedule follow-up.',
+        type: 'error',
+      });
+    } finally {
+      setIsFollowingUp(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -546,6 +630,20 @@ const Consultation = (props: any) => {
                 }
                 submitConsultation(parseInt(getConsultationFollowUpId, 10));
               }}
+            />
+
+            <AppTextInput
+              label="Shift Date (yyyy-MM-dd)"
+              placeholder="Leave empty for today (e.g. 2026-03-24)"
+              value={scheduledFollowUpDate}
+              onChangeText={setScheduledFollowUpDate}
+              containerStyle={styles.inputContainer}
+            />
+
+            <AppButton
+              title="Submit Scheduled Follow Up"
+              loading={isFollowingUp}
+              onPress={submitScheduledFollowUp}
             />
             {quickActionStatus && (
               <View

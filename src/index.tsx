@@ -49,6 +49,7 @@ export {
   getConsultationList,
   getConsultationInfo,
   getLastConsultation,
+  getConsultationAvailableShifts,
   createConsultation,
   deleteConsultation,
   cancelConsultation,
@@ -60,6 +61,8 @@ export {
   sendSinaMessage,
   getSinaChatMessages,
 } from './connection';
+
+export { shiftValue, displayText } from './types';
 
 export { TBIConstants, init } from './service';
 
@@ -97,6 +100,8 @@ export type {
   RecommendationDoctorReferral,
   RecommendationPostCallAnswer,
   ConsultationType,
+  ConsultationAvailableShift,
+  ConsultationAvailableShifts,
   ChatType,
   ChatResponse,
   ChatMessage,
